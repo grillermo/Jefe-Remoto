@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\mainWindow.ui'
 #
-# Created: Sat Apr 30 20:42:45 2011
+# Created: Sun May 01 00:56:11 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(698, 401)
+        Dialog.resize(699, 401)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/server-icon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -86,6 +86,9 @@ class Ui_Dialog(object):
         self.textEdit.setObjectName(_fromUtf8("textEdit"))
         self.gridLayout_4.addWidget(self.textEdit, 0, 0, 1, 1)
         self.generateClientButton = QtGui.QCommandLinkButton(self.groupBox_3)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/go-bottom.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.generateClientButton.setIcon(icon1)
         self.generateClientButton.setObjectName(_fromUtf8("generateClientButton"))
         self.gridLayout_4.addWidget(self.generateClientButton, 1, 0, 1, 1)
         self.gridLayout_5.addWidget(self.groupBox_3, 2, 0, 1, 2)
@@ -98,6 +101,11 @@ class Ui_Dialog(object):
         self.horizontalLayoutActionBtns.setObjectName(_fromUtf8("horizontalLayoutActionBtns"))
         self.uploadButton = QtGui.QCommandLinkButton(self.serverTab)
         self.uploadButton.setAcceptDrops(False)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/mail-reply-sender.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.uploadButton.setIcon(icon2)
+        self.uploadButton.setCheckable(False)
+        self.uploadButton.setAutoRepeat(False)
         self.uploadButton.setObjectName(_fromUtf8("uploadButton"))
         self.horizontalLayoutActionBtns.addWidget(self.uploadButton)
         self.uploadAndExecuteButton = QtGui.QCommandLinkButton(self.serverTab)
@@ -111,7 +119,9 @@ class Ui_Dialog(object):
         self.machinesTable.setAcceptDrops(True)
         self.machinesTable.setObjectName(_fromUtf8("machinesTable"))
         self.machinesTable.setColumnCount(4)
-        self.machinesTable.setRowCount(0)
+        self.machinesTable.setRowCount(1)
+        item = QtGui.QTableWidgetItem()
+        self.machinesTable.setVerticalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
         self.machinesTable.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -120,6 +130,18 @@ class Ui_Dialog(object):
         self.machinesTable.setHorizontalHeaderItem(2, item)
         item = QtGui.QTableWidgetItem()
         self.machinesTable.setHorizontalHeaderItem(3, item)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/network-offline.svg")), QtGui.QIcon.Disabled, QtGui.QIcon.On)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/network-receive.svg")), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+        item = QtGui.QTableWidgetItem()
+        item.setIcon(icon3)
+        self.machinesTable.setItem(0, 0, item)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/image-missing.svg")), QtGui.QIcon.Disabled, QtGui.QIcon.On)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/resources/mail-attachment.svg")), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+        item = QtGui.QTableWidgetItem()
+        item.setIcon(icon4)
+        self.machinesTable.setItem(0, 3, item)
         self.machinesTable.horizontalHeader().setStretchLastSection(True)
         self.machinesTable.verticalHeader().setStretchLastSection(False)
         self.gridLayout.addWidget(self.machinesTable, 0, 0, 1, 1)
@@ -166,6 +188,9 @@ class Ui_Dialog(object):
         self.machinesTable.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("Dialog", "Nombre", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("Dialog", "IP", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("Dialog", "Transferencia", None, QtGui.QApplication.UnicodeUTF8))
+        __sortingEnabled = self.machinesTable.isSortingEnabled()
+        self.machinesTable.setSortingEnabled(False)
+        self.machinesTable.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.serverTab), QtGui.QApplication.translate("Dialog", "Servidor", None, QtGui.QApplication.UnicodeUTF8))
         self.pruebas.setText(QtGui.QApplication.translate("Dialog", "pruebas", None, QtGui.QApplication.UnicodeUTF8))
 
