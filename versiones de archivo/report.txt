@@ -1,0 +1,30 @@
+Opci¢n incorrecta -c.
+
+
+Uso: ping [-t] [-a] [-n cuenta] [-l tama¤o] [-f] [-i TTL] [-v TOS]
+            [-r cuenta] [-s cuenta] [[-j lista-host] | [-k lista-host]]
+            [-w tiempo_espera] [-R] [-S srcaddr] [-4] [-6] nombre_destino
+
+Opciones:
+ -t                  Hacer ping al host especificado hasta que se detenga.
+                     Para ver estad¡sticas y continuar, presione Ctrl+Inter;
+                     para detener, presione Ctrl+C.
+ -a                  Resolver direcciones en nombres de host.
+ -n cuenta           N£mero de solicitudes de eco para enviar.
+ -l tama¤o           Enviar tama¤o del b£fer.
+ -f                  Establecer marca No fragmentar en paquetes (s¢lo IPv4).
+ -i TTL              Tiempo de vida.
+ -v TOS              Tipo de servicio (s¢lo IPv4. Esta opci¢n qued¢ obsoleta y 
+                     no tiene ning£n efecto sobre el campo de tipo de servicio 
+                     del encabezado IP).
+ -r cuenta           Registrar la ruta de saltos de cuenta (s¢lo IPv4).
+ -s cuenta           Marca de tiempo de saltos de cuenta (s¢lo IPv4).
+ -j lista-host       Ruta de origen no estricta para lista-host (s¢lo IPv4).
+ -k lista-host       Ruta de origen estricta para lista-host (s¢lo IPv4).
+ -w tiempo_espera    Tiempo de espera en milisegundos para cada respuesta.
+ -R                  Usar encabezado de enrutamiento para probar tambi‚n 
+                     la ruta inversa (s¢lo IPv6).
+-S srcaddr           Direcci¢n de origen que se desea usar.
+-4                   Forzar el uso de IPv4.
+-6                   Forzar el uso de IPv6.
+
