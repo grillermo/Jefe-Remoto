@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+## 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\mainWindow.ui'
 #
 # Created: Sun May 01 00:56:11 2011
