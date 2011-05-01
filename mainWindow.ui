@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>698</width>
+    <width>699</width>
     <height>401</height>
    </rect>
   </property>
@@ -185,6 +185,10 @@ p, li { white-space: pre-wrap; }
             <property name="text">
              <string>Crear Cliente/s</string>
             </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/resources/go-bottom.svg</normaloff>:/resources/go-bottom.svg</iconset>
+            </property>
            </widget>
           </item>
          </layout>
@@ -206,6 +210,16 @@ p, li { white-space: pre-wrap; }
            </property>
            <property name="text">
             <string>Solo subir archivos</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/resources/mail-reply-sender.svg</normaloff>:/resources/mail-reply-sender.svg</iconset>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="autoRepeat">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -238,6 +252,11 @@ p, li { white-space: pre-wrap; }
          <attribute name="verticalHeaderStretchLastSection">
           <bool>false</bool>
          </attribute>
+         <row>
+          <property name="text">
+           <string/>
+          </property>
+         </row>
          <column>
           <property name="text">
            <string>Estado</string>
@@ -258,6 +277,28 @@ p, li { white-space: pre-wrap; }
            <string>Transferencia</string>
           </property>
          </column>
+         <item row="0" column="0">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <disabledoff>:/resources/network-receive.svg</disabledoff>
+            <disabledon>:/resources/network-offline.svg</disabledon>
+           </iconset>
+          </property>
+         </item>
+         <item row="0" column="3">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset>
+            <disabledoff>:/resources/mail-attachment.svg</disabledoff>
+            <disabledon>:/resources/image-missing.svg</disabledon>
+           </iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

@@ -1,5 +1,16 @@
 <RCC>
   <qresource prefix="/">
+    <file>resources/mail-attachment.svg</file>
+    <file>resources/mail-reply-all.svg</file>
+    <file>resources/mail-reply-sender.svg</file>
+    <file>resources/mail-send-receive.svg</file>
+    <file>resources/face-monkey.svg</file>
+    <file>resources/go-bottom.svg</file>
+    <file>resources/image-missing.svg</file>
+    <file>resources/mail-attachment.svg</file>
+    <file>resources/network-offline.svg</file>
+    <file>resources/mail-send-receive.svg</file>
+    <file>resources/network-receive.svg</file>
     <file>resources/server-icon.svg</file>
   </qresource>
 </RCC>
