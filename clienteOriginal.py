@@ -26,6 +26,7 @@
 USER, PASSWORD, SERVERIP ="","",""
 executorFile = 'run.py'
 
+from sys import argv
 from time import sleep
 from os import name, stat, listdir, getcwd, mkdir, system, path
 from subprocess import Popen, PIPE, call
@@ -40,9 +41,12 @@ from configobj import ConfigObj
 # this code will only run the first time
 config = ConfigObj('conf.cfg')
 if not path.isfile('conf.cfg'):
-    if name == 'nt':
+    if platform.system == 'Windows':
         ARRIVALFOLDER = getcwd()+'\\files\\'
         mkdir(ARRIVALFOLDER)
+        exe = argv[0]
+        print ' abriendo firewall para '+exe
+        os.system('netsh firewall set allowedprogram %s JefeRemoto Enable'%exe)
     else:
         ARRIVALFOLDER = getcwd()+'/files/'
         mkdir(ARRIVALFOLDER)
@@ -64,7 +68,7 @@ class clientServices():
         if start_new_thread(self.reportIn,()):
             start_new_thread(self.detectChanges, ())
             start_new_thread(self.ftpServer,())
-        print 'DEBUG '+'init termino'
+        print 'se iniciaron todos los servicios'
 
     def ftpServer(self):
         authorizer = DummyAuthorizer()
@@ -73,6 +77,7 @@ class clientServices():
         ftp_handler.authorizer = authorizer
         address = (LOCALIP, 21)
         ftpd = FTPServer(address, ftp_handler)
+        print 'ftp iniciado exitosamente'
         ftpd.serve_forever()
 
     def reportIn(self,PORT=50007,TIMEOUT=5):
@@ -94,11 +99,12 @@ class clientServices():
                 break
             else:
                 print 'unidentified signal (client-side):', msg, 'from', address, '-> IGNORED'
+        print 'me reporte exitosamente con el servidor'
         scannerSock.close()
         return True
 
     def detectChanges(self):
-        if platform.system == 'Windows':
+        if platform.system() == 'Windows':
             file_to_run = "files\\run.py"
             originalState = stat(file_to_run)[-2]
             while 1:

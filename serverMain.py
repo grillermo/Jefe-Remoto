@@ -30,15 +30,16 @@ import platform
 from socket import gethostbyname, gethostname
 from shutil import move
 from subprocess import Popen, PIPE
-from functools import partial
+import ftplib
 
-from PyQt4.QtCore import SIGNAL, QProcess, Qt
+from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread
 from PyQt4.QtGui import QDialog, QApplication,QTableWidgetItem, QFileDialog,\
-                        QMessageBox
+                        QMessageBox, QIcon
 from configobj import ConfigObj #allow us to treat a file as a dict, awesome!
 
 from mainWindow import Ui_Dialog
 from broadcastingReceiver import *
+import ping
 
 # ######## Load machines list ####### #
 machinesFile = ConfigObj('machines.cfg')
@@ -46,16 +47,30 @@ if path.isfile('machines.cfg'):
     machinesData = {}
     for name,ip in machinesFile.items():
             machinesData[name] = ip
-
 else:
     machinesData = {}
     machinesFile.write()
 
 # ######################################## #
 
-STATUS, IP, TRANSFER = range(3)
+NAME, STATUS, IP, TRANSFER = range(4)
+
+class GenericThread(QThread):
+    def __init__(self, function='', *args, **kwargs):
+        QThread.__init__(self)
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        self.function(*self.args,**self.kwargs)
+        return
 
 class ViewController(QDialog):
+    Key_Control = 0
     def __init__(self):
         QDialog.__init__(self)
         self.ui=Ui_Dialog()
@@ -65,64 +80,66 @@ class ViewController(QDialog):
         self.originalFile = 'clienteOriginal.py'
         self.customForClient = 'ClientePersonalizado.py'
         self.files = set([])
-        self.rowToNameMapping = {}
+        self.machinesItems = {}
         self.configFile = ConfigObj('configFile.cfg')
+        self.table = self.ui.machinesTable
+
+        if len(machinesData) != 0: #we asume the user already created clients
+            self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
+        self.table.verticalHeader().setVisible(False)
 
         # reimplementing drops
         self.ui.fileDropTextLine.__class__.dragMoveEvent = self.mydragMoveEvent
         self.ui.fileDropTextLine.__class__.dragEnterEvent = self.mydragEnterEvent
         self.ui.fileDropTextLine.__class__.dropEvent = self.myDropEvent
 
+        # Static Methods
+        self.initialMachinesLoading()
         self.adaptToOS(self.customForClient)
         start_new_thread(self.startScanner,())
 
+        # buttons
         self.ui.generateClientButton.clicked.connect(self.runCompilingJob)
         self.ui.uploadButton.clicked.connect(self.uploadToClients)
         self.ui.uploadAndExecuteButton.clicked.connect(self.uploadToClients)
 
+        # Ui events
         self.ui.fileDropTextLine.editingFinished.connect(self.checkInput)
-        # don't know how to connect unbound signals with the new style, do you?
-##        self.connect(self,SIGNAL('dropped'),self.pruebas)
-        self.connect(self,SIGNAL('warning'),self.warningDialog)
-
-
-        self.ui.pruebas.clicked.connect(self.pruebas)
-
-    def pruebas(self):
-        pass
-
-    def findItemRow(self,stringToSearch):
-        typeOfSearch = Qt.MatchFlags(1)
-        item = self.ui.machinesTable.findItems(stringToSearch,typeOfSearch)
-        for i in item:
-            return str(i.row())
-        self.warningDialog('lol osom','tu mama')
-        print str(self.files)
-        print str(self.sender().objectName())
+        self.table.cellDoubleClicked.connect(self.deleteMachine)
 
     def startScanner(self):
         self.scanner = Scanner()
-        self.connect(self.scanner, SIGNAL('addMachines'), self.addMachines)
+        self.connect(self.scanner,SIGNAL('addMachines'),self.addDetectedMachine)
         self.scanner.listen()
 
-    def addMachines(self,name,ip):
+    def addDetectedMachine(self,name,ip):
         if not machinesData.has_key(name):
             machinesData[name] = ip
-            for name in machinesData.keys():
-                _rowIndex = self.ui.machinesTable.rowCount()
-                _name = QTableWidgetItem(name)
-                _ip = QTableWidgetItem(machinesData[name])
-                _status = QTableWidgetItem('conectada')
-                self.ui.machinesTable.insertRow(_rowIndex)
-                self.ui.machinesTable.setVerticalHeaderItem(_rowIndex,_name)
-                self.ui.machinesTable.setItem(_rowIndex,IP,_ip)
-                self.ui.machinesTable.setItem(_rowIndex,STATUS,_status)
-                self.rowToNameMapping[name] = _rowIndex
-                machinesFile[name] = ip
-                machinesFile.write()
+            rowCount = self.table.rowCount()
+            nameItem = QTableWidgetItem(name)
+            ipItem = QTableWidgetItem(machinesData[name])
+            statusItem = QTableWidgetItem('conectada')
+            self.table.insertRow(_rowIndex)
+            self.table.setItem(rowCount,NAME,nameItem)
+            self.table.setItem(rowCount,IP,ipItem)
+            self.table.setItem(rowCount,STATUS,statusItem)
+            self.machinesItems[ip] = ipItem
+            machinesFile[name] = ip
+            machinesFile.write() #and save our detected data to our machines.cfg
         return
-    def updateSTATUS(self):
-        self.rowToNameMapping
+
+    def initialMachinesLoading(self):
+        for name in machinesData.keys():
+            ip = machinesData[name]
+            rowCount = self.table.rowCount()
+            nameItem = QTableWidgetItem(name)
+            ipItem = QTableWidgetItem(machinesData[name])
+            statusItem = QTableWidgetItem('desconocido')
+            self.table.insertRow(rowCount)
+            self.table.setItem(rowCount,NAME,nameItem)
+            self.table.setItem(rowCount,IP,ipItem)
+            self.table.setItem(rowCount,STATUS,statusItem)
+            self.machinesItems[ip] = ipItem
 
     def adaptToOS(self,customForClient):
         ''' the only argument is the client name as a string
@@ -133,7 +150,7 @@ class ViewController(QDialog):
             self.exeFile : the absolute path to the compiled file
 
             it also sets the qradiobuttons to disabled for the other os
-            '''
+        '''
         cwd = getcwd()
         if platform.system() == 'Darwin' or platform.system() == 'Linux':
             self.ui.osxChoice.setEnabled(True)
@@ -156,6 +173,7 @@ class ViewController(QDialog):
         self.createClientFile(self.originalFile,self.customForClient)
         self.launchcompiler(self.toCompile)
         self.saveExe(self.exeFile)
+        self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
 
     def createClientFile(self,originalFile,customForClient):
         ''' This method will generate a client script for the .py to .exe app
@@ -226,7 +244,7 @@ class ViewController(QDialog):
     def initFTPObject(self,host):
         ''' takes a host in the form of a string ip and returns and ftplib
         object '''
-        ftpObject = FTP(host)
+        ftpObject = ftplib.FTP(host)
         if configFile.has_key('USERNAME') and configFile.has_key('PASSWORD'):
             username = configFile['USERNAME']
             password = configFile['PASSWORD']
@@ -314,6 +332,56 @@ class ViewController(QDialog):
         msgBox.setWindowTitle('Advertencia')
         if msgBox.exec_():
             pass
+
+    def keyPressEvent(self,ev):
+        if ev.key() == QtCore.Qt.Key_Control:
+            self.Key_Control = 1
+        if ev.key() == Qt.Key_F5 and self.Key_Control == 1:
+            print 'F5 pressed'
+            self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
+            self.updateSTATUS(self.machinesItems)
+
+    def keyReleaseEvent(self, ev):
+        if ev.key() == QtCore.Qt.Key_Control:
+            self.Key_Control = 0
+
+    def updateSTATUS(self,machines):
+        self.connect(self, SIGNAL('updateStatus'),self.updateMachinesTables)
+        self.multiThreadIt(self.pingMachines,machines)
+
+    def multiThreadIt(self,*args):
+        _thread = GenericThread(*args)
+        _thread.start()
+
+    def pingMachines(self,machines,timeout=2):
+        for ip in machines.keys():
+            print 'pinging '+ip
+            _result = ping.do_one(ip,timeout)
+            if type(_result) == float:
+                isAlive = True
+                print 'ip alive'
+            else:
+                isAlive = False
+                print 'ip dead'
+            self.emit(SIGNAL('updateStatus'),machines[ip],isAlive)
+
+    def updateMachinesTables(self,item,isAlive):
+        row = item.row()
+        if isAlive == True:
+            statusItem = QTableWidgetItem('conectada')
+        else:
+            statusItem = QTableWidgetItem('desconectada')
+        self.table.setItem(row,STATUS,statusItem)
+
+    def deleteMachine(self, row, column):
+        self.table.selectRow(row)
+        name = str(self.table.item(row,0).text())
+        ip = str(self.table.item(row,2).text())
+        del machinesData[name]
+        del self.machinesItems[ip]
+        del machinesFile[name]
+        machinesFile.write()
+        self.table.removeRow(row)
 
 def main():
     app = QApplication(sys.argv)
