@@ -6,8 +6,8 @@ import ipaddr
 from functools import partial
 import threading
 
-_fromUtf8 = QString.fromUtf8
 from PyQt4.QtCore import *
+_fromUtf8 = QString.fromUtf8
 from PyQt4.QtGui import *
 import ping
 
@@ -38,7 +38,7 @@ chosenFileStr = _fromUtf8('El archivo es ')
 successfulConnection = _fromUtf8(' conectó exitosamente')
 failedConnection = _fromUtf8(' no respondio')
 
-class GenericThread(QThread):
+class GenericThread(QObject):
     def __init__(self, function='', *args, **kwargs):
         QThread.__init__(self)
         self.function = function

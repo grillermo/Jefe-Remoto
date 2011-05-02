@@ -201,7 +201,7 @@ p, li { white-space: pre-wrap; }
        <string>Servidor</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="1" column="0">
+       <item row="3" column="0">
         <layout class="QHBoxLayout" name="horizontalLayoutActionBtns">
          <item>
           <widget class="QCommandLinkButton" name="uploadButton">
@@ -209,7 +209,7 @@ p, li { white-space: pre-wrap; }
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Solo subir archivos</string>
+            <string>Solo subir archivo</string>
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
@@ -229,13 +229,13 @@ p, li { white-space: pre-wrap; }
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Subir y ejecutar archivos</string>
+            <string>Subir y ejecutar archivo</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QTableWidget" name="machinesTable">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
@@ -244,7 +244,7 @@ p, li { white-space: pre-wrap; }
           <enum>Qt::NoContextMenu</enum>
          </property>
          <property name="acceptDrops">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
@@ -252,19 +252,9 @@ p, li { white-space: pre-wrap; }
          <attribute name="verticalHeaderStretchLastSection">
           <bool>false</bool>
          </attribute>
-         <row>
-          <property name="text">
-           <string/>
-          </property>
-         </row>
          <column>
           <property name="text">
            <string>Estado</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Nombre</string>
           </property>
          </column>
          <column>
@@ -277,28 +267,22 @@ p, li { white-space: pre-wrap; }
            <string>Transferencia</string>
           </property>
          </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <disabledoff>:/resources/network-receive.svg</disabledoff>
-            <disabledon>:/resources/network-offline.svg</disabledon>
-           </iconset>
-          </property>
-         </item>
-         <item row="0" column="3">
-          <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset>
-            <disabledoff>:/resources/mail-attachment.svg</disabledoff>
-            <disabledon>:/resources/image-missing.svg</disabledon>
-           </iconset>
-          </property>
-         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLineEdit" name="fileDropTextLine">
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Arrastre o escriba aqui el archivo, puede incluir argumentos de ejecución</string>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>

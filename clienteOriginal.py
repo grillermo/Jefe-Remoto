@@ -1,21 +1,35 @@
-USER, PASSWORD, SERVERIP ="labsia","labsia","148.214.82.69"
+#-------------------------------------------------------------------------------
+# Application Name:        JefeRemoto
+# Module Name:             ServerMain
+# Purpose:              Run services needed in the client, only using python
+#                       standard libraries,
+# Author:      Guillermo Siliceo Trueba
+#
+# Created:     23/04/2011
+# Licence:
+'''
+   Copyright 2011 Guillermo Siliceo Trueba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+'''
+#-------------------------------------------------------------------------------
+USER, PASSWORD, SERVERIP ="","",""
 executorFile = 'run.py'
-#-------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      grillermo
-#
-# Created:     28/04/2011
-# Copyright:   (c) grillermo 2011
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
-#!/usr/bin/env python
 
 from time import sleep
 from os import name, stat, listdir, getcwd, mkdir, system, path
 from subprocess import Popen, PIPE, call
-from thread import *
+from thread import start_new_thread
 import platform
 import socket as sk
 
@@ -47,9 +61,9 @@ else:
 
 class clientServices():
     def __init__(self):
-        self.connected = False
-        self.startFTP()
-        start_new_thread(self.detectChanges,(ARRIVALFOLDER,))
+        if start_new_thread(self.reportIn,()):
+            start_new_thread(self.detectChanges, ())
+            start_new_thread(self.ftpServer,())
         print 'DEBUG '+'init termino'
 
     def ftpServer(self):
@@ -61,7 +75,7 @@ class clientServices():
         ftpd = FTPServer(address, ftp_handler)
         ftpd.serve_forever()
 
-    def reportIn(self,SERVERIP,MACHINENAME,PORT=50007,TIMEOUT=5):
+    def reportIn(self,PORT=50007,TIMEOUT=5):
         scannerSock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
         scannerSock.setsockopt(sk.SOL_SOCKET, sk.SO_BROADCAST, 1)
         scannerSock.settimeout(TIMEOUT)
@@ -83,39 +97,29 @@ class clientServices():
         scannerSock.close()
         return True
 
-    def startFTP(self):
-        while self.connected == False:
-            sleep(60)
-            self.connected = start_new_thread(self.reportIn,(SERVERIP,MACHINENAME))
-        start_new_thread(self.ftpServer,())
-
-    def detectChanges(self,folder):
+    def detectChanges(self):
         if platform.system == 'Windows':
             file_to_run = "files\\run.py"
             originalState = stat(file_to_run)[-2]
             while 1:
-                sleep(13)
+                sleep(60)
                 try:
                     if originalState != stat(older+file_to_run)[-2]:
                         system(file_to_run)
-                        print 'hubo cambio motherfocker'
+                        print 'something changed'
                 except:
                     print 'file gone, we just wait until it comes back'
         print 'DEBUG '+' DETECTOR termino'
 
 
-# My implementation specific code, we have DeepFreeze on our machines and
+# My implementation-specific code, we have DeepFreeze on our machines and
 # we dont want the script to run if the machine is frozen
-
-def isFrozen():
-    error = call('DFC get /ISFROZEN',shell=True)
-    return error
-
+# just remove it
 def main():
-    if isFrozen(): #by Deepfreeze docs on remote admin
+    if call('DFC get /ISFROZEN',shell=False): #Deepfreeze docs on remote admin
         pass
     else:
-        obj = clientServices()
+        clientServices()
 
 if __name__ == '__main__':
     main()
@@ -123,5 +127,4 @@ if __name__ == '__main__':
 
 # thanks to Tim Golden for the directory changed code
 # http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
-
 

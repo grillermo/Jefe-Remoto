@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'reporterdialog.ui'
+# Form implementation generated from reading ui file 'C:\c\jefeRemoto\versiones de archivo\reporterdialog.ui'
 #
-# Created: Sun Apr 10 14:53:53 2011
+# Created: Sun May 01 21:47:01 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!

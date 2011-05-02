@@ -1,14 +1,28 @@
 #-------------------------------------------------------------------------------
-# Name:        module2
-# Purpose:
-#
-# Author:      grillermo
+# Application Name:        JefeRemoto
+# Module Name:             ServerMain
+# Purpose:              Provide a GUI with all the functions to create and use
+#                       clients
+# Author:      Guillermo Siliceo Trueba
 #
 # Created:     23/04/2011
-# Copyright:   (c) grillermo 2011
-# Licence:     <your licence>
+# Licence:
+'''
+   Copyright 2011 Guillermo Siliceo Trueba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+'''
 #-------------------------------------------------------------------------------
-#!/usr/bin/env python
 import sys
 from os import path, getcwd,system
 from thread import start_new_thread
@@ -39,7 +53,7 @@ else:
 
 # ######################################## #
 
-STATE, NAME, IP, TRANSFER = range(4)
+STATUS, IP, TRANSFER = range(3)
 
 class ViewController(QDialog):
     def __init__(self):
@@ -51,12 +65,13 @@ class ViewController(QDialog):
         self.originalFile = 'clienteOriginal.py'
         self.customForClient = 'ClientePersonalizado.py'
         self.files = set([])
-        configFile = ConfigObj('configFile.cfg')
+        self.rowToNameMapping = {}
+        self.configFile = ConfigObj('configFile.cfg')
 
         # reimplementing drops
-        self.ui.machinesTable.__class__.dragMoveEvent = self.mydragMoveEvent
-        self.ui.machinesTable.__class__.dragEnterEvent = self.mydragMoveEvent
-        self.ui.machinesTable.__class__.dropEvent = self.myDropEvent
+        self.ui.fileDropTextLine.__class__.dragMoveEvent = self.mydragMoveEvent
+        self.ui.fileDropTextLine.__class__.dragEnterEvent = self.mydragEnterEvent
+        self.ui.fileDropTextLine.__class__.dropEvent = self.myDropEvent
 
         self.adaptToOS(self.customForClient)
         start_new_thread(self.startScanner,())
@@ -64,40 +79,56 @@ class ViewController(QDialog):
         self.ui.generateClientButton.clicked.connect(self.runCompilingJob)
         self.ui.uploadButton.clicked.connect(self.uploadToClients)
         self.ui.uploadAndExecuteButton.clicked.connect(self.uploadToClients)
-        # don't know how to connect unbound signals with the new style
-        self.connect(self,SIGNAL('dropped'),self.pruebas)
+
+        self.ui.fileDropTextLine.editingFinished.connect(self.checkInput)
+        # don't know how to connect unbound signals with the new style, do you?
+##        self.connect(self,SIGNAL('dropped'),self.pruebas)
+        self.connect(self,SIGNAL('warning'),self.warningDialog)
+
 
         self.ui.pruebas.clicked.connect(self.pruebas)
 
     def pruebas(self):
+        pass
+
+    def findItemRow(self,stringToSearch):
+        typeOfSearch = Qt.MatchFlags(1)
+        item = self.ui.machinesTable.findItems(stringToSearch,typeOfSearch)
+        for i in item:
+            return str(i.row())
         self.warningDialog('lol osom','tu mama')
-##        print str(self.files)
-##        print str(self.sender().objectName())
+        print str(self.files)
+        print str(self.sender().objectName())
 
     def startScanner(self):
         self.scanner = Scanner()
-        self.connect(self.scanner, SIGNAL('updateMachines'), self.updateView)
+        self.connect(self.scanner, SIGNAL('addMachines'), self.addMachines)
         self.scanner.listen()
 
-    def updateView(self,name,ip):
+    def addMachines(self,name,ip):
         if not machinesData.has_key(name):
             machinesData[name] = ip
             for name in machinesData.keys():
-                _index = self.ui.machinesTable.rowCount()
+                _rowIndex = self.ui.machinesTable.rowCount()
                 _name = QTableWidgetItem(name)
                 _ip = QTableWidgetItem(machinesData[name])
-                self.ui.machinesTable.insertRow(_index)
-                self.ui.machinesTable.setItem(_index,NAME,_name)
-                self.ui.machinesTable.setItem(_index,IP,_ip)
-                machinesFile[name] = machinesData[ip]
+                _status = QTableWidgetItem('conectada')
+                self.ui.machinesTable.insertRow(_rowIndex)
+                self.ui.machinesTable.setVerticalHeaderItem(_rowIndex,_name)
+                self.ui.machinesTable.setItem(_rowIndex,IP,_ip)
+                self.ui.machinesTable.setItem(_rowIndex,STATUS,_status)
+                self.rowToNameMapping[name] = _rowIndex
+                machinesFile[name] = ip
                 machinesFile.write()
         return
+    def updateSTATUS(self):
+        self.rowToNameMapping
 
     def adaptToOS(self,customForClient):
         ''' the only argument is the client name as a string
             sets the following values depending on the OS
 
-            self.exeCreator : the absolute path to the compiler(PyInstaller)
+            self.compiler : the absolute path to the compiler(PyInstaller)
             self.toCompile : the absolute path to the script to compile
             self.exeFile : the absolute path to the compiled file
 
@@ -108,7 +139,7 @@ class ViewController(QDialog):
             self.ui.osxChoice.setEnabled(True)
             self.ui.windowsChoice.setEnabled(False)
             self.ui.linuxChoice.setEnabled(False)
-            self.exeCreator = cwd+'/PyInstaller/pyinstaller.py'
+            self.compiler = cwd+'/PyInstaller/pyinstaller.py'
             self.toCompile =cwd+'/'+customForClient
             self.exeFile = cwd+'/dist/'+customForClient[:-3]+'.app'
             if platform.system() == 'Linux':
@@ -117,14 +148,14 @@ class ViewController(QDialog):
             self.ui.osxChoice.setEnabled(False)
             self.ui.windowsChoice.setEnabled(True)
             self.ui.ubuntuChoice.setEnabled(False)
-            self.exeCreator = cwd+'\\PyInstaller\\pyinstaller.py'
+            self.compiler = cwd+'\\PyInstaller\\pyinstaller.py'
             self.toCompile = cwd+'\\'+customForClient
             self.exeFile = cwd+'\\dist\\'+customForClient[:-3]+'.exe'
 
     def runCompilingJob(self):
         self.createClientFile(self.originalFile,self.customForClient)
-        self.launchExeCreator(self.exeFile)
-        self.moveExe(self.exeFile)
+        self.launchcompiler(self.toCompile)
+        self.saveExe(self.exeFile)
 
     def createClientFile(self,originalFile,customForClient):
         ''' This method will generate a client script for the .py to .exe app
@@ -149,35 +180,38 @@ class ViewController(QDialog):
         return
         # and now with our script ready we call the compiler
 
-    def launchExeCreator(self,filename,flags=' --onefile --noconsole'):
+    def launchcompiler(self,filename,flags=' --onefile --icon=C:\c\je feRemoto\resources\client.ico'):
         ''' Takes a string with the name of our client and calls the compiler
         with the flags hard coded here'''
-        command = '%s "%s" %s'%(self.exeCreator,filename,flags)
-        # remember that exeCreator and toCompile were create by customizeToOS()
+        command = '%s "%s" %s'%(self.compiler,filename,flags)
+        # remember that compiler and toCompile were create by customizeToOS()
         print command #debugging
         process = system(command)
 
         # once the file is done we save for future use the data the client used
-        configFile['USERNAME'] = self.username
-        configFile['PASSWORD'] = self.password
-        configFile.write()
+        self.configFile['USERNAME'] = self.username
+        self.configFile['PASSWORD'] = self.password
+        self.configFile.write()
         return
         # the executable is (hopefully)done we can move it where the user wants
 ##        print 'debug compilation \n'+str(text)
 
-    def saveExe(self,exeDir,exeName):
+    def saveExe(self,exeFile):
         options = QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self,
                 "Donde desea guardar el ejecutable", options)
-        print exeDir+exeName
+        print exeFile
         print str(directory)
-        move(exeDir+exeName,str(directory))
+        move(exeFile,str(directory))
         return
 
     def uploadToClients(self):
         ''' will send the files to the clients '''
-        senderButton = str(self.sender().objectName()) #lets see who called us
-        if senderButton == uploadButton: #only do uploading
+        if self.validText == False:
+            self.warningDialog('Archivo inexistente o invalido')
+            return
+        senderButton = str(self.sender().objectName()) # lets see who called us
+        if senderButton == 'uploadButton': # only do uploading
             for name in machinesData.keys():
                 clientFTP = self.initFTPObject(machinesData[name])
                 self.uploadFiles(clientFTP,self.files)
@@ -203,20 +237,6 @@ class ViewController(QDialog):
         ftpObject.login(username,password)
         return ftpObject
 
-    def uploadFiles(self,ftpObject,files):
-        ''' takes and ftp object and a set of files and recursively uploads
-        the files'''
-        if not len(files):
-            for fileName in files:
-                if self.uploadFile(ftpObject,filename):
-                    self.files.remove(fileName)
-                else:
-                    print 'file sending failed at self.uploadFiles()'
-                    raise
-                self.uploadFiles() #recursive function ftw
-        return True
-##        ftp.retrlines('LIST')
-
     def uploadFile(self,ftpObject,fileName):
         fileHandler = open(filename,'rb')
         self.ftp.storbinary('STOR  '+filename, fileHandler)
@@ -224,7 +244,7 @@ class ViewController(QDialog):
         fileHandler.close()
         return True
 
-    def batchExeFile(self,):
+    def batchExeFile(self,arguments):
         ''' hacky idea alert: this app will send a file called run.py to the
         remote pc that will detect it and execute if the file changes.
         run.py will then execute the files one by one os.system().
@@ -235,12 +255,18 @@ class ViewController(QDialog):
         runFile.close()
         return path.join(getcwd()+self.exeBatch)
 
-    def warningDialog(self, message, title):
-        msgBox = QMessageBox()
-        msgBox.setText(message)
-        msgBox.setWindowTitle(title)
-        if msgBox.exec_():
-            pass
+    def checkInput(self):
+        checkText = ''
+        text = self.ui.fileDropTextLine.text()
+        for letter in text:
+            checkText = checkText+letter
+            if path.isfile(checkText):
+                argumentsBeginningIndex = len(text)-len(checkText)
+                self.fileArguments = text[-argumentsBeginningIndex:]
+                self.validText = True
+                break
+            else:
+                self.validText = False
 
     def getLocalIP(self):
         ''' yes a function is needed for this apparently there are many
@@ -249,6 +275,13 @@ class ViewController(QDialog):
         if ip.startswith('127'):
             print 'linux machine or offline machine '
         return ip
+
+    def mydragEnterEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.accept()
+            self.ui.fileDropTextLine.clear()
+        else:
+            event.ignore()
 
     def mydragMoveEvent(self, event):
         if event.mimeData().hasUrls:
@@ -262,13 +295,25 @@ class ViewController(QDialog):
         if event.mimeData().hasUrls:
             event.setDropAction(Qt.CopyAction)
             event.accept()
-            for url in event.mimeData().urls():
-                url = str(url.toLocalFile())
-                if path.isfile(url):
-                    self.files.add(url)
+            if len(event.mimeData().urls()) > 1:
+                self.emit(SIGNAL("warning"),'Arrastre un solo archivo')
+            else:
+                for url in event.mimeData().urls():
+                    url = str(url.toLocalFile())
+                    if path.isfile(url):
+                        self.files.add(url)
+                        self.ui.fileDropTextLine.setText(url)
             self.emit(SIGNAL("dropped"))
         else:
             event.ignore()
+
+    def warningDialog(self, message):
+        msgBox = QMessageBox()
+        msgBox.setBaseSize (100, 50)
+        msgBox.setText(message)
+        msgBox.setWindowTitle('Advertencia')
+        if msgBox.exec_():
+            pass
 
 def main():
     app = QApplication(sys.argv)

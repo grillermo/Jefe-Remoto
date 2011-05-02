@@ -1,4 +1,29 @@
-﻿import socket as sk
+﻿#-------------------------------------------------------------------------------
+# Application Name:        broadcastingReceiver
+# Module Name:             ServerMain
+# Purpose:              Provide an interface so the clients can connect their
+#                       broadcasted signals
+# Author:      Guillermo Siliceo Trueba
+#
+# Created:     23/04/2011
+# Licence:
+'''
+   Copyright 2011 Guillermo Siliceo Trueba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+'''
+#-------------------------------------------------------------------------------
+import socket as sk
 from time import sleep
 from PyQt4.QtCore import QObject,SIGNAL
 
@@ -24,7 +49,7 @@ class Scanner(QObject):
                 print 'received PING signal from', address[0]
                 print 'sending STOP signal back to', address[0]
                 resser.sendto('STOP', address)
-                self.emit(SIGNAL('updateMachines'),msg[4:],address[0])
+                self.emit(SIGNAL('addMachines'),msg[4:],address[0])
             else:
                 print 'unidentified signal (server-side):', msg, 'from', address, '-> IGNORED'
 
@@ -33,7 +58,7 @@ class TesterClass(QObject):
         QObject.__init__(self)
         self.machines = {}
         self.scanner = Scanner()
-        self.connect(self.scanner, SIGNAL('updateMachines'),self.testingSignal)
+        self.connect(self.scanner, SIGNAL('addMachines'),self.testingSignal)
         self.scanner.listen()
 
     def testingSignal(self,msg,address):
