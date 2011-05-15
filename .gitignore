@@ -6,4 +6,3 @@
 *.pyz
 *.cfg
 *.spec
-pyinstaller/
