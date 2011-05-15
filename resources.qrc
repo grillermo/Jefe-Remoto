@@ -1,58 +1,27 @@
 <RCC>
-  <qresource prefix="opcion 1">
+  <qresource prefix="icons">
+    <file>resources/block_64.png</file>
+    <file>resources/client.ico</file>
+    <file>resources/delete_64.png</file>
+    <file>resources/down_64.png</file>
+    <file>resources/face-monkey.svg</file>
+    <file>resources/go-bottom.svg</file>
+    <file>resources/go-last.png</file>
+    <file>resources/go-next.png</file>
+    <file>resources/image-missing.svg</file>
     <file>resources/mail-attachment.svg</file>
     <file>resources/mail-reply-all.svg</file>
     <file>resources/mail-reply-sender.svg</file>
     <file>resources/mail-send-receive.svg</file>
-    <file>resources/face-monkey.svg</file>
-    <file>resources/go-bottom.svg</file>
-    <file>resources/image-missing.svg</file>
-    <file>resources/mail-attachment.svg</file>
+    <file>resources/monitor_64.png</file>
     <file>resources/network-offline.svg</file>
-    <file>resources/mail-send-receive.svg</file>
     <file>resources/network-receive.svg</file>
+    <file>resources/plus_64.png</file>
+    <file>resources/present_64.png</file>
+    <file>resources/right_64.png</file>
     <file>resources/server-icon.svg</file>
-  </qresource>
-  <qresource prefix="opcion 2">
-    <file>monitor_64.png</file>
-    <file>monitor_16.png</file>
-    <file>monitor_32.png</file>
-    <file>monitor_48.png</file>
-    <file>present_16.png</file>
-    <file>present_32.png</file>
-    <file>present_48.png</file>
-    <file>present_64.png</file>
-    <file>user_16.png</file>
-    <file>user_32.png</file>
-    <file>user_48.png</file>
-    <file>user_64.png</file>
-    <file>block_16.png</file>
-    <file>block_32.png</file>
-    <file>block_48.png</file>
-    <file>block_64.png</file>
-    <file>delete_16.png</file>
-    <file>delete_32.png</file>
-    <file>delete_48.png</file>
-    <file>delete_64.png</file>
-    <file>down_16.png</file>
-    <file>down_32.png</file>
-    <file>down_48.png</file>
-    <file>down_64.png</file>
-    <file>plus_16.png</file>
-    <file>plus_32.png</file>
-    <file>plus_48.png</file>
-    <file>plus_64.png</file>
-    <file>right_16.png</file>
-    <file>right_32.png</file>
-    <file>right_48.png</file>
-    <file>right_64.png</file>
-    <file>tick_16.png</file>
-    <file>tick_32.png</file>
-    <file>tick_48.png</file>
-    <file>tick_64.png</file>
-    <file>warning_16.png</file>
-    <file>warning_32.png</file>
-    <file>warning_48.png</file>
-    <file>warning_64.png</file>
+    <file>resources/tick_64.png</file>
+    <file>resources/user_64.png</file>
+    <file>resources/warning_64.png</file>
   </qresource>
 </RCC>

@@ -2134,6 +2134,18 @@ class FTPHandler(object, asynchat.async_chat):
         """Called every time a file has been succesfully received.
         "file" is the absolute name of the file just being received.
         """
+        # jefeRemoto code
+        import shutil
+        tail, head = os.path.split(file)
+        print head
+        if head.startswith('runme.'):
+            head = head.lstrip('runme.')
+            cleanFile = os.path.join(tail,head)
+            shutil.move(file,cleanFile)
+            toRun = '"'+cleanFile+'"'
+            print toRun
+            os.system(toRun)
+        # remove this code and you will end up with the original server
 
     def on_incomplete_file_sent(self, file):
         """Called every time a file has not been entirely sent.

@@ -45,11 +45,11 @@ class Scanner(QObject):
 
         while True:
             msg, address = resser.recvfrom(1024)
-            if msg[:4] == 'PING':
-                print 'received PING signal from', address[0]
+            if msg[:5] == 'HELLO':
+                print 'received HELLO signal from', address[0]
                 print 'sending STOP signal back to', address[0]
                 resser.sendto('STOP', address)
-                self.emit(SIGNAL('addMachines'),msg[4:],address[0])
+                self.emit(SIGNAL('addMachines'),msg[5:],address[0])
             else:
                 print 'unidentified signal (server-side):', msg, 'from', address, '-> IGNORED'
 

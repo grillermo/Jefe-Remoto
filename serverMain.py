@@ -1,11 +1,10 @@
 #-------------------------------------------------------------------------------
-# Application Name:        JefeRemoto
-# Module Name:             ServerMain
-# Purpose:              Provide a GUI with all the functions to create and use
-#                       clients
-# Author:      Guillermo Siliceo Trueba
+# Application Name:         JefeRemoto
+# Module Name:              ServerMain
+# Purpose:                  View+Controller+Data of the main server for admins
+# Author:                   Guillermo Siliceo Trueba
 #
-# Created:     23/04/2011
+# Created:                  23/04/2011
 # Licence:
 '''
    Copyright 2011 Guillermo Siliceo Trueba
@@ -22,79 +21,63 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 '''
+#
 #-------------------------------------------------------------------------------
 import sys
-from os import path, getcwd,system
+from os import path, getcwd, system
 from thread import start_new_thread
 import platform
 from socket import gethostbyname, gethostname
 from shutil import move
-from subprocess import Popen, PIPE
 import ftplib
+import time
 
-from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread
-from PyQt4.QtGui import QDialog, QApplication,QTableWidgetItem, QFileDialog,\
-                        QMessageBox, QIcon
+from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray
+from PyQt4.QtGui import QDialog, QApplication, QTableWidgetItem, QFileDialog, \
+                        QIcon, QMovie
 from configobj import ConfigObj #allow us to treat a file as a dict, awesome!
 
 from mainWindow import Ui_Dialog
-from broadcastingReceiver import *
+from broadcastingReceiver import Scanner
 import ping
 
-# ######## Load machines list ####### #
-machinesFile = ConfigObj('machines.cfg')
-if path.isfile('machines.cfg'):
-    machinesData = {}
-    for name,ip in machinesFile.items():
-            machinesData[name] = ip
-else:
-    machinesData = {}
-    machinesFile.write()
-
-# ######################################## #
-
+machinesData = ConfigObj('machines.list') ## here we will save our machines list
+if not path.isfile('machines.list'):
+    machinesData.write()
 NAME, STATUS, IP, TRANSFER = range(4)
 
-class GenericThread(QThread):
-    def __init__(self, function='', *args, **kwargs):
-        QThread.__init__(self)
-        self.function = function
-        self.args = args
-        self.kwargs = kwargs
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        self.function(*self.args,**self.kwargs)
-        return
 
 class ViewController(QDialog):
-    Key_Control = 0
     def __init__(self):
         QDialog.__init__(self)
         self.ui=Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui.passwordTextBox.setEchoMode(2)
-        self.exeBatch = 'run.py' #read the docstring of createExecutionFile()
-        self.originalFile = 'clienteOriginal.py'
-        self.customForClient = 'ClientePersonalizado.py'
-        self.files = set([])
+        self.ui.passwordTextBox.setEchoMode(2) # how to do this on Qtdesigner?
+
+        self.originalFile = 'clienteoriginal.py'
+        self.customForClient = 'clientepersonalizado.py'
+
         self.machinesItems = {}
         self.configFile = ConfigObj('configFile.cfg')
-        self.table = self.ui.machinesTable
+        self.tbl = self.ui.machinesTable
 
-        if len(machinesData) != 0: #we asume the user already created clients
+        self.ui.movie_screen.setFixedHeight(0)
+        self.movie = QMovie("loader.gif", QByteArray(), self)
+        self.movie.setCacheMode(QMovie.CacheAll)
+        self.movie.setSpeed(100)
+        self.ui.movie_screen.setMovie(self.movie)
+
+
+        if len(machinesData) != 0: # if the user already created clients.exe
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
-        self.table.verticalHeader().setVisible(False)
+        self.tbl.verticalHeader().setVisible(False) # qtDesigner miss this
 
         # reimplementing drops
         self.ui.fileDropTextLine.__class__.dragMoveEvent = self.mydragMoveEvent
-        self.ui.fileDropTextLine.__class__.dragEnterEvent = self.mydragEnterEvent
+        self.ui.fileDropTextLine.__class__.dragEnterEvent =self.mydragEnterEvent
         self.ui.fileDropTextLine.__class__.dropEvent = self.myDropEvent
 
-        # Static Methods
-        self.initialMachinesLoading()
+        self.initialLoading()
         self.adaptToOS(self.customForClient)
         start_new_thread(self.startScanner,())
 
@@ -104,42 +87,27 @@ class ViewController(QDialog):
         self.ui.uploadAndExecuteButton.clicked.connect(self.uploadToClients)
 
         # Ui events
+        self.connect(self, SIGNAL('updateStatus'),self.updateMachinesTable)
         self.ui.fileDropTextLine.editingFinished.connect(self.checkInput)
-        self.table.cellDoubleClicked.connect(self.deleteMachine)
+        self.connect(self,SIGNAL('droppedFile'),self.checkInput)
+        self.tbl.cellDoubleClicked.connect(self.deleteMachine)
+        self.connect(self, SIGNAL('toggleAnimation'),self.toggleWaiting)
+
+
+    def toggleWaiting(self):
+        if self.movie.state() == 0:
+            self.ui.fileDropTextLine.setFixedHeight(0)
+            self.ui.movie_screen.setFixedHeight(26)
+            self.movie.start()
+        else:
+            self.movie.stop()
+            self.ui.fileDropTextLine.setFixedHeight(26)
+            self.ui.movie_screen.setFixedHeight(0)
 
     def startScanner(self):
         self.scanner = Scanner()
         self.connect(self.scanner,SIGNAL('addMachines'),self.addDetectedMachine)
         self.scanner.listen()
-
-    def addDetectedMachine(self,name,ip):
-        if not machinesData.has_key(name):
-            machinesData[name] = ip
-            rowCount = self.table.rowCount()
-            nameItem = QTableWidgetItem(name)
-            ipItem = QTableWidgetItem(machinesData[name])
-            statusItem = QTableWidgetItem('conectada')
-            self.table.insertRow(_rowIndex)
-            self.table.setItem(rowCount,NAME,nameItem)
-            self.table.setItem(rowCount,IP,ipItem)
-            self.table.setItem(rowCount,STATUS,statusItem)
-            self.machinesItems[ip] = ipItem
-            machinesFile[name] = ip
-            machinesFile.write() #and save our detected data to our machines.cfg
-        return
-
-    def initialMachinesLoading(self):
-        for name in machinesData.keys():
-            ip = machinesData[name]
-            rowCount = self.table.rowCount()
-            nameItem = QTableWidgetItem(name)
-            ipItem = QTableWidgetItem(machinesData[name])
-            statusItem = QTableWidgetItem('desconocido')
-            self.table.insertRow(rowCount)
-            self.table.setItem(rowCount,NAME,nameItem)
-            self.table.setItem(rowCount,IP,ipItem)
-            self.table.setItem(rowCount,STATUS,statusItem)
-            self.machinesItems[ip] = ipItem
 
     def adaptToOS(self,customForClient):
         ''' the only argument is the client name as a string
@@ -155,7 +123,7 @@ class ViewController(QDialog):
         if platform.system() == 'Darwin' or platform.system() == 'Linux':
             self.ui.osxChoice.setEnabled(True)
             self.ui.windowsChoice.setEnabled(False)
-            self.ui.linuxChoice.setEnabled(False)
+            self.ui.ubuntuChoice.setEnabled(False)
             self.compiler = cwd+'/PyInstaller/pyinstaller.py'
             self.toCompile =cwd+'/'+customForClient
             self.exeFile = cwd+'/dist/'+customForClient[:-3]+'.app'
@@ -169,9 +137,56 @@ class ViewController(QDialog):
             self.toCompile = cwd+'\\'+customForClient
             self.exeFile = cwd+'\\dist\\'+customForClient[:-3]+'.exe'
 
+    def initialLoading(self):
+        for name,ip in machinesData.items():
+            rowCount = self.tbl.rowCount()
+            nameItem = QTableWidgetItem(name)
+            ipItem = QTableWidgetItem(machinesData[name])
+            statusItem = QTableWidgetItem('desconocido')
+            self.tbl.insertRow(rowCount)
+            self.tbl.setItem(rowCount,NAME,nameItem)
+            self.tbl.setItem(rowCount,IP,ipItem)
+            self.tbl.setItem(rowCount,STATUS,statusItem)
+
+            self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
+
+    def addDetectedMachine(self,name,ip):
+        if not machinesData.has_key(name):
+            machinesData[name] = ip
+            rowCount = self.tbl.rowCount()
+            nameItem = QTableWidgetItem(name)
+            ipItem = QTableWidgetItem(machinesData[name])
+            statusItem = QTableWidgetItem('conectada')
+            self.tbl.insertRow(rowCount)
+            self.tbl.setItem(rowCount,NAME,nameItem)
+            self.tbl.setItem(rowCount,IP,ipItem)
+            self.tbl.setItem(rowCount,STATUS,statusItem)
+
+            machinesData.write() #and save our detected data to our machines dic
+
+            self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
+
+    def updateMachinesTable(self,item,isAlive):
+        row = item.row()
+        if isAlive == True:
+            statusItem = QTableWidgetItem('conectada')
+        else:
+            statusItem = QTableWidgetItem('desconectada')
+        self.tbl.setItem(row,STATUS,statusItem)
+
+    def deleteMachine(self, row, column):
+        self.tbl.selectRow(row)
+        name = str(self.tbl.item(row,0).text())
+        ip = str(self.tbl.item(row,2).text())
+        del self.machinesItems[ip]
+        self.tbl.removeRow(row)
+        del machinesData[name]
+        machinesData.write()
+
+
     def runCompilingJob(self):
         self.createClientFile(self.originalFile,self.customForClient)
-        self.launchcompiler(self.toCompile)
+        self.launchCompiler(self.toCompile)
         self.saveExe(self.exeFile)
         self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
 
@@ -190,22 +205,19 @@ class ViewController(QDialog):
             line = line.replace('''USER, PASSWORD, SERVERIP ="","",""''',
                                 'USER, PASSWORD, SERVERIP = "%s", "%s", "%s"'%
                                 (self.username,self.password,ip))
-            line = line.replace("executorFile = 'run.py'",
-                                "executorFile = '%s'"%self.exeBatch)
             forClient.write(line)
         forClient.close()
         original.close()
         return
         # and now with our script ready we call the compiler
 
-    def launchcompiler(self,filename,flags=' --onefile --icon=C:\c\je feRemoto\resources\client.ico'):
+    def launchCompiler(self,filename,flags=' --onefile'):
         ''' Takes a string with the name of our client and calls the compiler
         with the flags hard coded here'''
         command = '%s "%s" %s'%(self.compiler,filename,flags)
         # remember that compiler and toCompile were create by customizeToOS()
         print command #debugging
-        process = system(command)
-
+        system(command)
         # once the file is done we save for future use the data the client used
         self.configFile['USERNAME'] = self.username
         self.configFile['PASSWORD'] = self.password
@@ -217,74 +229,65 @@ class ViewController(QDialog):
     def saveExe(self,exeFile):
         options = QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self,
-                "Donde desea guardar el ejecutable", options)
-        print exeFile
-        print str(directory)
-        move(exeFile,str(directory))
+                "Donde desea guardar el ejecutable", getcwd(),options)
+##        print exeFile
+##        print str(directory)
+        timeString = ' %s%s%s%s%s.exe'%time.localtime()[:5]
+        newPath = directory+'\\'+path.split(exeFile)[1].strip('.exe')+timeString
+        move(exeFile,newPath)#no duplicated files ever
         return
 
     def uploadToClients(self):
-        ''' will send the files to the clients '''
-        if self.validText == False:
-            self.warningDialog('Archivo inexistente o invalido')
+        self.disconnect(self, SIGNAL('clicked'),self.uploadToClients)
+        if self.checkInput():
+            tail, filename = path.split(str(self.ui.fileDropTextLine.text()))
+        else:
             return
         senderButton = str(self.sender().objectName()) # lets see who called us
+        self.emit(SIGNAL('toggleAnimation'))
         if senderButton == 'uploadButton': # only do uploading
-            for name in machinesData.keys():
-                clientFTP = self.initFTPObject(machinesData[name])
-                self.uploadFiles(clientFTP,self.files)
+            for ip in machinesData.values():
+                self.initFTPObject(ip)
+                self.uploadFile(filename)
         else:
-            batchFilePath = batchExeFile()
-            self.files.add(batchFilePath)
-            for name in machinesData.keys():
-                clientFTP = self.initFTPObject(machinesData[name])
-                self.uploadFiles(clientFTP,self.files)
-            self.files.remove(batchFilePath)
+            for ip in machinesData.values():
+                self.initFTPObject(ip)
+                self.fileSendingComplete = False
+                move(filename,'runme.'+filename)
+                filename = 'runme.'+filename
+                self.uploadFile(filename)
+                move(filename,filename.lstrip('runme.'))
+        self.emit(SIGNAL('toggleAnimation'))
+
+    def uploadFile(self,filename):
+        fileHandler = open(filename,'rb')
+        self.ftpObject.storbinary('STOR '+filename, fileHandler)
+        fileHandler.close()
+        print 'file %s succesfully sent'%filename
+        return True
 
     def initFTPObject(self,host):
         ''' takes a host in the form of a string ip and returns and ftplib
         object '''
-        ftpObject = ftplib.FTP(host)
-        if configFile.has_key('USERNAME') and configFile.has_key('PASSWORD'):
-            username = configFile['USERNAME']
-            password = configFile['PASSWORD']
+        self.ftpObject = ftplib.FTP(host)
+        if self.configFile.has_key('USERNAME') and\
+                                            self.configFile.has_key('PASSWORD'):
+            username = self.configFile['USERNAME']
+            password = self.configFile['PASSWORD']
         else:
             username = str(self.ui.usernameTextBox.text())
             password = str(self.ui.passwordTextBox.text())
-
-        ftpObject.login(username,password)
-        return ftpObject
-
-    def uploadFile(self,ftpObject,fileName):
-        fileHandler = open(filename,'rb')
-        self.ftp.storbinary('STOR  '+filename, fileHandler)
-        print 'file sending filed at self.sendFile()'
-        fileHandler.close()
-        return True
-
-    def batchExeFile(self,arguments):
-        ''' hacky idea alert: this app will send a file called run.py to the
-        remote pc that will detect it and execute if the file changes.
-        run.py will then execute the files one by one os.system().
-        If only i implemented SSH... on my ToDo list'''
-        runFile = open(self.exeBatch,'wb')
-        for filename in self.files:
-            runFile.write(filename)
-        runFile.close()
-        return path.join(getcwd()+self.exeBatch)
+        self.ftpObject.login(username,password)
 
     def checkInput(self):
-        checkText = ''
         text = self.ui.fileDropTextLine.text()
-        for letter in text:
-            checkText = checkText+letter
-            if path.isfile(checkText):
-                argumentsBeginningIndex = len(text)-len(checkText)
-                self.fileArguments = text[-argumentsBeginningIndex:]
-                self.validText = True
-                break
-            else:
-                self.validText = False
+        if path.isfile(text):
+            self.ui.fileDropTextLine.setStyleSheet("color: black;")
+            return True
+        else:
+            self.ui.fileDropTextLine.setStyleSheet("color: red;")
+            self.ui.fileDropTextLine.setText('Archivo invalido o inexistente')
+            return False
 
     def getLocalIP(self):
         ''' yes a function is needed for this apparently there are many
@@ -308,53 +311,30 @@ class ViewController(QDialog):
             event.ignore()
 
     def myDropEvent(self, event):
-        ''' loads into our self.files set the dropped file names
+        ''' loads into our self.files set the dropped fil5e names
             and emit a signal to advertise the change'''
         if event.mimeData().hasUrls:
             event.setDropAction(Qt.CopyAction)
             event.accept()
             if len(event.mimeData().urls()) > 1:
-                self.emit(SIGNAL("warning"),'Arrastre un solo archivo')
+                self.ui.fileDropTextLine.setText('Arraste un solo archivo')
             else:
                 for url in event.mimeData().urls():
                     url = str(url.toLocalFile())
-                    if path.isfile(url):
-                        self.files.add(url)
-                        self.ui.fileDropTextLine.setText(url)
-            self.emit(SIGNAL("dropped"))
+                    self.ui.fileDropTextLine.setText(url)
+                    self.emit(SIGNAL('droppedFile'))
         else:
             event.ignore()
 
-    def warningDialog(self, message):
-        msgBox = QMessageBox()
-        msgBox.setBaseSize (100, 50)
-        msgBox.setText(message)
-        msgBox.setWindowTitle('Advertencia')
-        if msgBox.exec_():
-            pass
-
     def keyPressEvent(self,ev):
-        if ev.key() == QtCore.Qt.Key_Control:
-            self.Key_Control = 1
-        if ev.key() == Qt.Key_F5 and self.Key_Control == 1:
+        if ev.key() == Qt.Key_F5:
             print 'F5 pressed'
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
-            self.updateSTATUS(self.machinesItems)
+            self.multiThreadIt(self.pingMachines)
 
-    def keyReleaseEvent(self, ev):
-        if ev.key() == QtCore.Qt.Key_Control:
-            self.Key_Control = 0
-
-    def updateSTATUS(self,machines):
-        self.connect(self, SIGNAL('updateStatus'),self.updateMachinesTables)
-        self.multiThreadIt(self.pingMachines,machines)
-
-    def multiThreadIt(self,*args):
-        _thread = GenericThread(*args)
-        _thread.start()
-
-    def pingMachines(self,machines,timeout=2):
-        for ip in machines.keys():
+    def pingMachines(self,timeout=2):
+        time.sleep(100)
+        for ip in self.machinesItems.keys():
             print 'pinging '+ip
             _result = ping.do_one(ip,timeout)
             if type(_result) == float:
@@ -363,25 +343,12 @@ class ViewController(QDialog):
             else:
                 isAlive = False
                 print 'ip dead'
-            self.emit(SIGNAL('updateStatus'),machines[ip],isAlive)
+            self.emit(SIGNAL('updateStatus'),self.machinesItems[ip],isAlive)
 
-    def updateMachinesTables(self,item,isAlive):
-        row = item.row()
-        if isAlive == True:
-            statusItem = QTableWidgetItem('conectada')
-        else:
-            statusItem = QTableWidgetItem('desconectada')
-        self.table.setItem(row,STATUS,statusItem)
+    def multiThreadIt(self,*args):
+        _thread = GenericThread(*args)
+        _thread.start()
 
-    def deleteMachine(self, row, column):
-        self.table.selectRow(row)
-        name = str(self.table.item(row,0).text())
-        ip = str(self.table.item(row,2).text())
-        del machinesData[name]
-        del self.machinesItems[ip]
-        del machinesFile[name]
-        machinesFile.write()
-        self.table.removeRow(row)
 
 def main():
     app = QApplication(sys.argv)

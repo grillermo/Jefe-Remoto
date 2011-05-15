@@ -24,7 +24,6 @@
 '''
 #-------------------------------------------------------------------------------
 USER, PASSWORD, SERVERIP ="","",""
-executorFile = 'run.py'
 
 from sys import argv
 from time import sleep
@@ -42,17 +41,14 @@ from configobj import ConfigObj
 config = ConfigObj('conf.cfg')
 if not path.isfile('conf.cfg'):
     if platform.system == 'Windows':
-        ARRIVALFOLDER = getcwd()+'\\files\\'
-        mkdir(ARRIVALFOLDER)
+        ARRIVALFOLDER = getcwd()
         exe = argv[0]
-        print ' abriendo firewall para '+exe
-        os.system('netsh firewall set allowedprogram %s JefeRemoto Enable'%exe)
+        print ' opening firewall for \n'+exe
+        os.system('netsh firewall set allowedprogram %s JefeRemoto Enable\n'%exe)
     else:
-        ARRIVALFOLDER = getcwd()+'/files/'
+        ARRIVALFOLDER = getcwd()+'/Tools/'
         mkdir(ARRIVALFOLDER)
     LOCALIP = sk.gethostbyname(sk.gethostname())
-    executor = open(ARRIVALFOLDER+'run.py','w')
-    executor.close()
     MACHINENAME = sk.gethostname()
     config['LOCALIP'] = LOCALIP
     config['MACHINENAME'] = MACHINENAME
@@ -65,10 +61,9 @@ else:
 
 class clientServices():
     def __init__(self):
-        if start_new_thread(self.reportIn,()):
-            start_new_thread(self.detectChanges, ())
+        if self.reportIn():
             start_new_thread(self.ftpServer,())
-        print 'se iniciaron todos los servicios'
+        print 'all services started\n'
 
     def ftpServer(self):
         authorizer = DummyAuthorizer()
@@ -77,60 +72,44 @@ class clientServices():
         ftp_handler.authorizer = authorizer
         address = (LOCALIP, 21)
         ftpd = FTPServer(address, ftp_handler)
-        print 'ftp iniciado exitosamente'
+        print 'ftp started succesfully \n'
         ftpd.serve_forever()
 
     def reportIn(self,PORT=50007,TIMEOUT=5):
         scannerSock = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
         scannerSock.setsockopt(sk.SOL_SOCKET, sk.SO_BROADCAST, 1)
         scannerSock.settimeout(TIMEOUT)
-        print 'Broadcasting PING the username %s'%MACHINENAME
-        scannerSock.sendto('PING' + MACHINENAME, ('<broadcast>', PORT))
-        print 'PING message sent'
+        print 'Sending a HELLO with the username %s\n'%MACHINENAME
+        scannerSock.sendto('HELLO' + MACHINENAME, (SERVERIP, PORT))
+        print 'PING message sent\n'
         while True:
             try:
                 msg, address = scannerSock.recvfrom(1024)
-                print 'waiting for the STOP message'
+                print 'waiting for the STOP message\n'
             except sk.timeout:
-                print 'scanner timeout'
+                print 'scanner timeout\n'
                 break
             if msg[:4] == 'STOP':
-                print 'received STOP signal from', address
+                print 'received STOP signal from\n', address
                 break
             else:
-                print 'unidentified signal (client-side):', msg, 'from', address, '-> IGNORED'
-        print 'me reporte exitosamente con el servidor'
+                print 'unidentified signal (client-side):', msg, 'from', address, '-> IGNORED\n'
+        print 'succesfully reported back to the server\n'
         scannerSock.close()
         return True
-
-    def detectChanges(self):
-        if platform.system() == 'Windows':
-            file_to_run = "files\\run.py"
-            originalState = stat(file_to_run)[-2]
-            while 1:
-                sleep(60)
-                try:
-                    if originalState != stat(older+file_to_run)[-2]:
-                        system(file_to_run)
-                        print 'something changed'
-                except:
-                    print 'file gone, we just wait until it comes back'
-        print 'DEBUG '+' DETECTOR termino'
-
 
 # My implementation-specific code, we have DeepFreeze on our machines and
 # we dont want the script to run if the machine is frozen
 # just remove it
+
 def main():
     if call('DFC get /ISFROZEN',shell=False): #Deepfreeze docs on remote admin
         pass
     else:
         clientServices()
-
+        while True:
+            sleep(60)
 if __name__ == '__main__':
     main()
 
-
-# thanks to Tim Golden for the directory changed code
-# http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html
 

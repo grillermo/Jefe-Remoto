@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\c\jefeRemoto\mainWindow.ui'
+# Form implementation generated from reading ui file 'C:\c\jefeRemoto\master\mainWindow.ui'
 #
-# Created: Mon May 02 14:42:34 2011
+# Created: Sun May 08 23:43:57 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(815, 386)
+        Dialog.resize(717, 469)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 1/resources/face-monkey.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -91,13 +91,13 @@ class Ui_Dialog(object):
         self.gridLayout_4.addWidget(self.textEdit, 0, 0, 1, 1)
         self.generateClientButton = QtGui.QCommandLinkButton(self.groupBox_3)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 2/present_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/present_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.generateClientButton.setIcon(icon1)
         self.generateClientButton.setObjectName(_fromUtf8("generateClientButton"))
         self.gridLayout_4.addWidget(self.generateClientButton, 1, 0, 1, 1)
         self.gridLayout_5.addWidget(self.groupBox_3, 2, 0, 1, 2)
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 2/user_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/user_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.clientTab, icon2, _fromUtf8(""))
         self.serverTab = QtGui.QWidget()
         self.serverTab.setObjectName(_fromUtf8("serverTab"))
@@ -108,7 +108,7 @@ class Ui_Dialog(object):
         self.uploadButton = QtGui.QCommandLinkButton(self.serverTab)
         self.uploadButton.setAcceptDrops(False)
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 2/plus_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/plus_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.uploadButton.setIcon(icon3)
         self.uploadButton.setCheckable(False)
         self.uploadButton.setAutoRepeat(False)
@@ -117,11 +117,11 @@ class Ui_Dialog(object):
         self.uploadAndExecuteButton = QtGui.QCommandLinkButton(self.serverTab)
         self.uploadAndExecuteButton.setAcceptDrops(False)
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 2/right_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/right_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.uploadAndExecuteButton.setIcon(icon4)
         self.uploadAndExecuteButton.setObjectName(_fromUtf8("uploadAndExecuteButton"))
         self.horizontalLayoutActionBtns.addWidget(self.uploadAndExecuteButton)
-        self.gridLayout.addLayout(self.horizontalLayoutActionBtns, 3, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayoutActionBtns, 5, 0, 1, 1)
         self.fileDropTextLine = QtGui.QLineEdit(self.serverTab)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Segoe UI"))
@@ -132,9 +132,10 @@ class Ui_Dialog(object):
         font.setStrikeOut(False)
         font.setBold(False)
         self.fileDropTextLine.setFont(font)
+        self.fileDropTextLine.setStyleSheet(_fromUtf8(""))
         self.fileDropTextLine.setDragEnabled(True)
         self.fileDropTextLine.setObjectName(_fromUtf8("fileDropTextLine"))
-        self.gridLayout.addWidget(self.fileDropTextLine, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.fileDropTextLine, 3, 0, 1, 1)
         self.machinesTable = QtGui.QTableWidget(self.serverTab)
         self.machinesTable.setEnabled(True)
         self.machinesTable.setMouseTracking(True)
@@ -157,10 +158,20 @@ class Ui_Dialog(object):
         self.machinesTable.horizontalHeader().setStretchLastSection(True)
         self.machinesTable.verticalHeader().setStretchLastSection(False)
         self.gridLayout.addWidget(self.machinesTable, 1, 0, 1, 1)
+        self.pruebasbtn = QtGui.QPushButton(self.serverTab)
+        self.pruebasbtn.setObjectName(_fromUtf8("pruebasbtn"))
+        self.gridLayout.addWidget(self.pruebasbtn, 0, 0, 1, 1)
+        self.movie_screen = QtGui.QLabel(self.serverTab)
+        self.movie_screen.setStyleSheet(_fromUtf8("border-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));"))
+        self.movie_screen.setText(_fromUtf8(""))
+        self.movie_screen.setAlignment(QtCore.Qt.AlignCenter)
+        self.movie_screen.setMargin(0)
+        self.movie_screen.setObjectName(_fromUtf8("movie_screen"))
+        self.gridLayout.addWidget(self.movie_screen, 2, 0, 1, 1)
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 2/monitor_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/network-receive.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.serverTab, icon5, _fromUtf8(""))
-        self.gridLayout_2.addWidget(self.tabWidget, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         self.tabWidget.setCurrentIndex(1)
@@ -185,21 +196,22 @@ class Ui_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">1. Haga click en generar clientes para crear un archivo ejecutable nativo para el sistema operativo en el que se ejecuta esta aplicación.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">2. Ejecute el/los cliente/s en cada máquina que desee controlar.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">3. A continuación expere en la Servidor a que aparezcan las maquinas.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">3. A continuación expere en la pestaña Servidor a que aparezcan las maquinas.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">4. Arrastre o escriba el nombre de un archivo en el campo correspondiente y haga click en la acción que desea ejecutar.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Nota. Los datos de seguridad se guardarán en los clientes.exe y en el servidor.cfg, permitiendo asi una comunicación exclusiva y segura entre ambos. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">LABSIA: por motivos de seguridad en este laboratorio el servicio no funcionará en maquinas congeladas.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.generateClientButton.setText(QtGui.QApplication.translate("Dialog", "Crear Cliente/s", None, QtGui.QApplication.UnicodeUTF8))
+        self.generateClientButton.setText(QtGui.QApplication.translate("Dialog", "Crear Cliente", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.clientTab), QtGui.QApplication.translate("Dialog", "Cliente", None, QtGui.QApplication.UnicodeUTF8))
-        self.uploadButton.setText(QtGui.QApplication.translate("Dialog", "Solo subir archivo", None, QtGui.QApplication.UnicodeUTF8))
-        self.uploadAndExecuteButton.setText(QtGui.QApplication.translate("Dialog", "Subir y ejecutar archivo", None, QtGui.QApplication.UnicodeUTF8))
-        self.fileDropTextLine.setText(QtGui.QApplication.translate("Dialog", "Arrastre o escriba aqui el archivo, puede incluir argumentos de ejecución", None, QtGui.QApplication.UnicodeUTF8))
+        self.uploadButton.setText(QtGui.QApplication.translate("Dialog", "Solo enviar archivo", None, QtGui.QApplication.UnicodeUTF8))
+        self.uploadAndExecuteButton.setText(QtGui.QApplication.translate("Dialog", "Enviar y ejecutar archivo", None, QtGui.QApplication.UnicodeUTF8))
+        self.fileDropTextLine.setText(QtGui.QApplication.translate("Dialog", "Arrastre o escriba aqui el archivo", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("Dialog", "Nombre", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("Dialog", "Estado", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("Dialog", "IP", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("Dialog", "Transferencia", None, QtGui.QApplication.UnicodeUTF8))
+        self.pruebasbtn.setText(QtGui.QApplication.translate("Dialog", "pruebas", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.serverTab), QtGui.QApplication.translate("Dialog", "Servidor", None, QtGui.QApplication.UnicodeUTF8))
 
 import resources_rc
