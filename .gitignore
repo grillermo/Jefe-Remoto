@@ -1,3 +1,9 @@
 *.log
 *.pyc
 *.png
+*.pkg
+*.toc
+*.pyz
+*.cfg
+*.spec
+pyinstaller/

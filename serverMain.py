@@ -28,11 +28,11 @@ from os import path, getcwd, system
 from thread import start_new_thread
 import platform
 from socket import gethostbyname, gethostname
-from shutil import move
+from shutil import move, copy
 import ftplib
 import time
 
-from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray
+from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray, QObject
 from PyQt4.QtGui import QDialog, QApplication, QTableWidgetItem, QFileDialog, \
                         QIcon, QMovie
 from configobj import ConfigObj #allow us to treat a file as a dict, awesome!
@@ -41,11 +41,16 @@ from mainWindow import Ui_Dialog
 from broadcastingReceiver import Scanner
 import ping
 
+# hack to get a nice icon on the Windows
+import ctypes
+myappid = 'jefeRemoto' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+# #####################################
+
 machinesData = ConfigObj('machines.list') ## here we will save our machines list
 if not path.isfile('machines.list'):
     machinesData.write()
 NAME, STATUS, IP, TRANSFER = range(4)
-
 
 class ViewController(QDialog):
     def __init__(self):
@@ -83,8 +88,8 @@ class ViewController(QDialog):
 
         # buttons
         self.ui.generateClientButton.clicked.connect(self.runCompilingJob)
-        self.ui.uploadButton.clicked.connect(self.uploadToClients)
-        self.ui.uploadAndExecuteButton.clicked.connect(self.uploadToClients)
+        self.ui.uploadButton.clicked.connect(self.distributeSending)
+        self.ui.uploadAndExecuteButton.clicked.connect(self.distributeSending)
 
         # Ui events
         self.connect(self, SIGNAL('updateStatus'),self.updateMachinesTable)
@@ -95,6 +100,7 @@ class ViewController(QDialog):
 
 
     def toggleWaiting(self):
+        print 'cambiando estado'
         if self.movie.state() == 0:
             self.ui.fileDropTextLine.setFixedHeight(0)
             self.ui.movie_screen.setFixedHeight(26)
@@ -151,6 +157,7 @@ class ViewController(QDialog):
             self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
 
     def addDetectedMachine(self,name,ip):
+        start_new_thread(self.pingMachine,(ip,))
         if not machinesData.has_key(name):
             machinesData[name] = ip
             rowCount = self.tbl.rowCount()
@@ -186,8 +193,8 @@ class ViewController(QDialog):
 
     def runCompilingJob(self):
         self.createClientFile(self.originalFile,self.customForClient)
-        self.launchCompiler(self.toCompile)
-        self.saveExe(self.exeFile)
+##        self.launchCompiler(self.toCompile)
+        self.saveClientFile(self.customForClient)
         self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
 
     def createClientFile(self,originalFile,customForClient):
@@ -211,53 +218,69 @@ class ViewController(QDialog):
         return
         # and now with our script ready we call the compiler
 
-    def launchCompiler(self,filename,flags=' --onefile'):
-        ''' Takes a string with the name of our client and calls the compiler
-        with the flags hard coded here'''
-        command = '%s "%s" %s'%(self.compiler,filename,flags)
-        # remember that compiler and toCompile were create by customizeToOS()
-        print command #debugging
-        system(command)
-        # once the file is done we save for future use the data the client used
-        self.configFile['USERNAME'] = self.username
-        self.configFile['PASSWORD'] = self.password
-        self.configFile.write()
-        return
-        # the executable is (hopefully)done we can move it where the user wants
+##    def launchCompiler(self,filename,flags=' --onefile'):
+##        ''' Takes a string with the name of our client and calls the compiler
+##        with the flags hard coded here'''
+##        command = '%s "%s" %s'%(self.compiler,filename,flags)
+##        # remember that compiler and toCompile were create by customizeToOS()
+##        print command #debugging
+##        system(command)
+##        # once the file is done we save for future use the data the client used
+##        self.configFile['USERNAME'] = self.username
+##        self.configFile['PASSWORD'] = self.password
+##        self.configFile.write()
+##        return
+##        # the executable is (hopefully)done we can move it where the user wants
 ##        print 'debug compilation \n'+str(text)
 
-    def saveExe(self,exeFile):
+    def saveClientFile(self,customForClient):
         options = QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self,
                 "Donde desea guardar el ejecutable", getcwd(),options)
 ##        print exeFile
 ##        print str(directory)
         timeString = ' %s%s%s%s%s.exe'%time.localtime()[:5]
-        newPath = directory+'\\'+path.split(exeFile)[1].strip('.exe')+timeString
-        move(exeFile,newPath)#no duplicated files ever
-        return
+        newPath = directory+'\\'+customForClient
+        move(customForClient,newPath)
+        copy('ftpserver.py',newPath)
+        copy('configobj.py',newPath)
 
-    def uploadToClients(self):
-        self.disconnect(self, SIGNAL('clicked'),self.uploadToClients)
+        return
+    def distributeSending(self):
+##        self.disconnect(self, SIGNAL('clicked'),self.uploadToClients)
         if self.checkInput():
             tail, filename = path.split(str(self.ui.fileDropTextLine.text()))
         else:
             return
         senderButton = str(self.sender().objectName()) # lets see who called us
-        self.emit(SIGNAL('toggleAnimation'))
+        print senderButton
         if senderButton == 'uploadButton': # only do uploading
-            for ip in machinesData.values():
-                self.initFTPObject(ip)
-                self.uploadFile(filename)
+            start_new_thread(self.uploadOnly,(filename,))
         else:
-            for ip in machinesData.values():
-                self.initFTPObject(ip)
-                self.fileSendingComplete = False
-                move(filename,'runme.'+filename)
-                filename = 'runme.'+filename
-                self.uploadFile(filename)
-                move(filename,filename.lstrip('runme.'))
+            start_new_thread(self.uploadAndExecute,(filename,))
+
+    def uploadOnly(self,filename):
         self.emit(SIGNAL('toggleAnimation'))
+        for ip in machinesData.values():
+            print 'uploading to IP ',ip
+            self.initFTPObject(ip)
+            self.uploadFile(filename)
+        self.emit(SIGNAL('toggleAnimation'))
+
+
+    def uploadAndExecute(self,filename):
+        self.emit(SIGNAL('toggleAnimation'))
+        tail, head = path.split(filename)
+        head = 'RUNME'+head
+        newFilename = path.join(tail,head)
+        move(filename,newFilename)
+        for ip in machinesData.values():
+            print 'uploading to ',ip
+            self.initFTPObject(ip)
+            self.uploadFile(newFilename)
+        self.emit(SIGNAL('toggleAnimation'))
+        move(newFilename,filename)
+
 
     def uploadFile(self,filename):
         fileHandler = open(filename,'rb')
@@ -330,24 +353,22 @@ class ViewController(QDialog):
         if ev.key() == Qt.Key_F5:
             print 'F5 pressed'
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
-            self.multiThreadIt(self.pingMachines)
+            start_new_thread(self.pingMachines,())
 
     def pingMachines(self,timeout=2):
-        time.sleep(100)
         for ip in self.machinesItems.keys():
-            print 'pinging '+ip
-            _result = ping.do_one(ip,timeout)
-            if type(_result) == float:
-                isAlive = True
-                print 'ip alive'
-            else:
-                isAlive = False
-                print 'ip dead'
-            self.emit(SIGNAL('updateStatus'),self.machinesItems[ip],isAlive)
+            self.pingMachine(ip)
 
-    def multiThreadIt(self,*args):
-        _thread = GenericThread(*args)
-        _thread.start()
+    def pingMachine(self,ip,timeout=2):
+        _result = ping.do_one(ip,timeout)
+        if type(_result) == float:
+            isAlive = True
+            print 'ip %s alive'%ip
+        else:
+            isAlive = False
+            print 'ip %s dead'%ip
+        self.emit(SIGNAL('updateStatus'),self.machinesItems[ip],isAlive)
+
 
 
 def main():

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\master\mainWindow.ui'
 #
-# Created: Sun May 08 23:43:57 2011
+# Created: Sun May 15 13:08:49 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,9 +17,9 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(717, 469)
+        Dialog.resize(648, 469)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/opcion 1/resources/face-monkey.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/server-icon.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         self.gridLayout_2 = QtGui.QGridLayout(Dialog)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -121,7 +121,7 @@ class Ui_Dialog(object):
         self.uploadAndExecuteButton.setIcon(icon4)
         self.uploadAndExecuteButton.setObjectName(_fromUtf8("uploadAndExecuteButton"))
         self.horizontalLayoutActionBtns.addWidget(self.uploadAndExecuteButton)
-        self.gridLayout.addLayout(self.horizontalLayoutActionBtns, 5, 0, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayoutActionBtns, 4, 0, 1, 1)
         self.fileDropTextLine = QtGui.QLineEdit(self.serverTab)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Segoe UI"))
@@ -135,7 +135,7 @@ class Ui_Dialog(object):
         self.fileDropTextLine.setStyleSheet(_fromUtf8(""))
         self.fileDropTextLine.setDragEnabled(True)
         self.fileDropTextLine.setObjectName(_fromUtf8("fileDropTextLine"))
-        self.gridLayout.addWidget(self.fileDropTextLine, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.fileDropTextLine, 2, 0, 1, 1)
         self.machinesTable = QtGui.QTableWidget(self.serverTab)
         self.machinesTable.setEnabled(True)
         self.machinesTable.setMouseTracking(True)
@@ -157,17 +157,14 @@ class Ui_Dialog(object):
         self.machinesTable.setHorizontalHeaderItem(3, item)
         self.machinesTable.horizontalHeader().setStretchLastSection(True)
         self.machinesTable.verticalHeader().setStretchLastSection(False)
-        self.gridLayout.addWidget(self.machinesTable, 1, 0, 1, 1)
-        self.pruebasbtn = QtGui.QPushButton(self.serverTab)
-        self.pruebasbtn.setObjectName(_fromUtf8("pruebasbtn"))
-        self.gridLayout.addWidget(self.pruebasbtn, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.machinesTable, 0, 0, 1, 1)
         self.movie_screen = QtGui.QLabel(self.serverTab)
         self.movie_screen.setStyleSheet(_fromUtf8("border-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));"))
         self.movie_screen.setText(_fromUtf8(""))
         self.movie_screen.setAlignment(QtCore.Qt.AlignCenter)
         self.movie_screen.setMargin(0)
         self.movie_screen.setObjectName(_fromUtf8("movie_screen"))
-        self.gridLayout.addWidget(self.movie_screen, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.movie_screen, 1, 0, 1, 1)
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/network-receive.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.serverTab, icon5, _fromUtf8(""))
@@ -211,7 +208,6 @@ class Ui_Dialog(object):
         self.machinesTable.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("Dialog", "Estado", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("Dialog", "IP", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("Dialog", "Transferencia", None, QtGui.QApplication.UnicodeUTF8))
-        self.pruebasbtn.setText(QtGui.QApplication.translate("Dialog", "pruebas", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.serverTab), QtGui.QApplication.translate("Dialog", "Servidor", None, QtGui.QApplication.UnicodeUTF8))
 
 import resources_rc
