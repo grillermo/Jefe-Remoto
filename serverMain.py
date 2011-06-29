@@ -270,17 +270,11 @@ class ViewController(QDialog):
 
     def uploadAndExecute(self,filename):
         self.emit(SIGNAL('toggleAnimation'))
-        tail, head = path.split(filename)
-        head = 'RUNME'+head
-        newFilename = path.join(tail,head)
-        move(filename,newFilename)
         for ip in machinesData.values():
             print 'uploading to ',ip
             self.initFTPObject(ip)
-            self.uploadFile(newFilename)
+            self.uploadFile(filename)
         self.emit(SIGNAL('toggleAnimation'))
-        move(newFilename,filename)
-
 
     def uploadFile(self,filename):
         fileHandler = open(filename,'rb')

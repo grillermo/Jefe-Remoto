@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\master\mainWindow.ui'
 #
-# Created: Sun May 15 13:08:49 2011
+# Created: Sat Jun 11 15:13:02 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -171,7 +171,7 @@ class Ui_Dialog(object):
         self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -210,7 +210,7 @@ class Ui_Dialog(object):
         self.machinesTable.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("Dialog", "Transferencia", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.serverTab), QtGui.QApplication.translate("Dialog", "Servidor", None, QtGui.QApplication.UnicodeUTF8))
 
-import resources_rc
+##import resources_rc
 
 if __name__ == "__main__":
     import sys

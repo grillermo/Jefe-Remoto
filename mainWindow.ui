@@ -27,7 +27,7 @@
       <enum>Qt::NoFocus</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="clientTab">
       <attribute name="icon">
@@ -59,7 +59,7 @@
            </widget>
           </item>
           <item>
-           <spacer name="horizontalSpacer">
+           <spacer name="espaciador">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
