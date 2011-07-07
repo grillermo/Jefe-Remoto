@@ -18,7 +18,10 @@ Purpose:
 To automate the transfering of file to multiple computers with the least number of clicks posible for the purpose of simple transfer or executing that file.
 
 Strategy
-Python 2.6.6 installes on all the machines
+Simple client-server
+
+Python 2.6.6 installed on all the machines.
+First you get your server wich can generate a ftpserver.py(on the future native executables).
 On the client side you get an fptserver.py pre-configured with the user,password and server to connect to.
 On this client i also have a small socket messaging communication to broadcast to the server our status.
 The server then creates a list of computers we can send files to.
