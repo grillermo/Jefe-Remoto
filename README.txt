@@ -4,6 +4,12 @@ It's my little itch i had to scratch.
 What itch was i scratching?
 I wanted to send and execute files remotely to administer computers but the current solutions are huge and overblown like Active Directory and i want it to be dead simple, you run a simple file on the computers you want to send files to execute and then with a drag and drop you are sending them files. That simple.
 
+Third parties:
+PyQt4 http://www.riverbankcomputing.co.uk/software/pyqt/download
+ConfigObj http://www.voidspace.org.uk/python/configobj.html
+PypMsg 0.2 http://pypmsg.blogspot.com/
+a pure Python Ping ftp://ftp.visi.com/users/mdc/ping.py
+
 Purpose:
 To automate the transfering of file to multiple computers with the least number of clicks posible for the purpose of simple transfer or executing that file.
 
@@ -27,3 +33,21 @@ I only got a few months programming in python so i still got a lot of work to do
 
 You want to help
 I'm really struggling with writting a complete ssh server in python i tried a few googled ones but i couldn't get them to work i'd love to hear from you if you have even a simple solution i can work with.
+
+Licence
+'''
+   Copyright 2011 Guillermo Siliceo Trueba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+'''
+Contact me @grillermo

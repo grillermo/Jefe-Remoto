@@ -39,10 +39,11 @@ from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray, QObject
 from PyQt4.QtGui import QDialog, QApplication, QTableWidgetItem, QFileDialog, \
                         QIcon, QMovie, QAbstractItemView, QBrush, QColor
 from configobj import ConfigObj #allow us to treat a file as a dict, awesome!
+import ping
 
 from mainWindow import Ui_Dialog
 from broadcastingReceiver import Scanner
-import ping
+
 
 # hack to get a nice icon on the Windows
 import ctypes
