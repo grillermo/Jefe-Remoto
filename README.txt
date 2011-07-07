@@ -1,6 +1,10 @@
 Jefe Remoto
 It's my little itch i had to scratch.
 
+Screenshots
+http://dl.dropbox.com/u/1729028/client%20view.png
+http://dl.dropbox.com/u/1729028/server%20view.png
+
 What itch was i scratching?
 I wanted to send and execute files remotely to administer computers but the current solutions are huge and overblown like Active Directory and i want it to be dead simple, you run a simple file on the computers you want to send files to execute and then with a drag and drop you are sending them files. That simple.
 
