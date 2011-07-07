@@ -24,7 +24,7 @@
 #
 #-------------------------------------------------------------------------------
 import sys
-from os import path, getcwd, system
+from os import path, getcwd, system, name
 from thread import start_new_thread
 import platform
 from socket import gethostbyname, gethostname
@@ -32,9 +32,12 @@ from shutil import move, copy
 import ftplib
 import time
 
+if name == 'nt':
+    import winsound
+
 from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray, QObject
 from PyQt4.QtGui import QDialog, QApplication, QTableWidgetItem, QFileDialog, \
-                        QIcon, QMovie
+                        QIcon, QMovie, QAbstractItemView, QBrush, QColor
 from configobj import ConfigObj #allow us to treat a file as a dict, awesome!
 
 from mainWindow import Ui_Dialog
@@ -50,6 +53,14 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 machinesData = ConfigObj('machines.list') ## here we will save our machines list
 if not path.isfile('machines.list'):
     machinesData.write()
+
+configFile = ConfigObj('configFile.cfg')
+if not path.isfile('configFile.cfg'):
+    configExists = False
+    configFile.write()
+else:
+    configExists = True
+
 NAME, STATUS, IP, TRANSFER = range(4)
 
 class ViewController(QDialog):
@@ -63,8 +74,11 @@ class ViewController(QDialog):
         self.customForClient = 'clientepersonalizado.py'
 
         self.machinesItems = {}
-        self.configFile = ConfigObj('configFile.cfg')
+
         self.tbl = self.ui.machinesTable
+        if configExists:
+            self.ui.usernameTextBox.setText(configFile['USERNAME'])
+            self.ui.passwordTextBox.setText(configFile['PASSWORD'])
 
         self.ui.movie_screen.setFixedHeight(0)
         self.movie = QMovie("loader.gif", QByteArray(), self)
@@ -77,19 +91,16 @@ class ViewController(QDialog):
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
         self.tbl.verticalHeader().setVisible(False) # qtDesigner miss this
 
+
         # reimplementing drops
         self.ui.fileDropTextLine.__class__.dragMoveEvent = self.mydragMoveEvent
         self.ui.fileDropTextLine.__class__.dragEnterEvent =self.mydragEnterEvent
         self.ui.fileDropTextLine.__class__.dropEvent = self.myDropEvent
 
-        self.initialLoading()
-        self.adaptToOS(self.customForClient)
-        start_new_thread(self.startScanner,())
 
         # buttons
         self.ui.generateClientButton.clicked.connect(self.runCompilingJob)
-        self.ui.uploadButton.clicked.connect(self.distributeSending)
-        self.ui.uploadAndExecuteButton.clicked.connect(self.distributeSending)
+        self.ui.uploadButton.clicked.connect(self.prepareShipment)
 
         # Ui events
         self.connect(self, SIGNAL('updateStatus'),self.updateMachinesTable)
@@ -97,10 +108,24 @@ class ViewController(QDialog):
         self.connect(self,SIGNAL('droppedFile'),self.checkInput)
         self.tbl.cellDoubleClicked.connect(self.deleteMachine)
         self.connect(self, SIGNAL('toggleAnimation'),self.toggleWaiting)
+        self.ui.usernameTextBox.editingFinished.connect(self.saveConfig)
+        self.ui.passwordTextBox.editingFinished.connect(self.saveConfig)
 
+        self.initialLoading()
+        self.adaptToOS(self.customForClient)
+        start_new_thread(self.startScanner,())
+        self.sort()
+        self.pingMachines()
+
+    def getMachineItem(self,ip):
+        return self.machinesItems[ip]
+
+    def saveConfig(self):
+        configFile['USERNAME'] = self.ui.usernameTextBox.text()
+        configFile['PASSWORD'] = self.ui.passwordTextBox.text()
+        configFile.write()
 
     def toggleWaiting(self):
-        print 'cambiando estado'
         if self.movie.state() == 0:
             self.ui.fileDropTextLine.setFixedHeight(0)
             self.ui.movie_screen.setFixedHeight(26)
@@ -157,7 +182,6 @@ class ViewController(QDialog):
             self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
 
     def addDetectedMachine(self,name,ip):
-        start_new_thread(self.pingMachine,(ip,))
         if not machinesData.has_key(name):
             machinesData[name] = ip
             rowCount = self.tbl.rowCount()
@@ -173,13 +197,24 @@ class ViewController(QDialog):
 
             self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
 
-    def updateMachinesTable(self,item,isAlive):
+    def updateMachinesTable(self,item,isAlive=True,transferStatus=None):
+        '''
+        item(QTableWidgetItem)  : the computer in the table to modify
+        isAlive(bool)           : the computer's status on by default
+        transferStatus(str)     : the transfer statos of the file
+        '''
         row = item.row()
         if isAlive == True:
             statusItem = QTableWidgetItem('conectada')
         else:
             statusItem = QTableWidgetItem('desconectada')
         self.tbl.setItem(row,STATUS,statusItem)
+
+        if transferStatus:
+            transfer = QTableWidgetItem(transferStatus)
+        else:
+            transfer = QTableWidgetItem('Lista para recibir archivos')
+        self.tbl.setItem(row,TRANSFER,transfer)
 
     def deleteMachine(self, row, column):
         self.tbl.selectRow(row)
@@ -237,44 +272,41 @@ class ViewController(QDialog):
         options = QFileDialog.ShowDirsOnly
         directory = QFileDialog.getExistingDirectory(self,
                 "Donde desea guardar el ejecutable", getcwd(),options)
-##        print exeFile
-##        print str(directory)
         timeString = ' %s%s%s%s%s.exe'%time.localtime()[:5]
         newPath = directory+'\\'+customForClient
         move(customForClient,newPath)
         copy('ftpserver.py',newPath)
         copy('configobj.py',newPath)
-
         return
-    def distributeSending(self):
-##        self.disconnect(self, SIGNAL('clicked'),self.uploadToClients)
+
+    def prepareShipment(self):
         if self.checkInput():
             tail, filename = path.split(str(self.ui.fileDropTextLine.text()))
         else:
             return
-        senderButton = str(self.sender().objectName()) # lets see who called us
-        print senderButton
-        if senderButton == 'uploadButton': # only do uploading
-            start_new_thread(self.uploadOnly,(filename,))
-        else:
-            start_new_thread(self.uploadAndExecute,(filename,))
+        start_new_thread(self.upload,(filename,))
 
-    def uploadOnly(self,filename):
+    def upload(self,filename):
         self.emit(SIGNAL('toggleAnimation'))
         for ip in machinesData.values():
             print 'uploading to IP ',ip
-            self.initFTPObject(ip)
-            self.uploadFile(filename)
-        self.emit(SIGNAL('toggleAnimation'))
+            item = self.getMachineItem(ip)
+            self.tbl.scrollToItem(item,QAbstractItemView.EnsureVisible)
+            try:
+                status = 'Enviando archivo...'
+                self.updateMachinesTable(item,transferStatus=status)
+                self.initFTPObject(ip)
+                self.uploadFile(filename)
+                status = 'Transferencia exitosa'
+                self.updateMachinesTable(item,transferStatus=status)
+            except:
+                status = 'Transferencia fallida'
+                self.updateMachinesTable(item,transferStatus=status)
 
-
-    def uploadAndExecute(self,filename):
         self.emit(SIGNAL('toggleAnimation'))
-        for ip in machinesData.values():
-            print 'uploading to ',ip
-            self.initFTPObject(ip)
-            self.uploadFile(filename)
-        self.emit(SIGNAL('toggleAnimation'))
+        if name == 'nt':
+            sound = "C:\\c\\jefeRemoto\\master\\audio.wav"
+            winsound.PlaySound('%s' % sound, winsound.SND_FILENAME)
 
     def uploadFile(self,filename):
         fileHandler = open(filename,'rb')
@@ -286,11 +318,10 @@ class ViewController(QDialog):
     def initFTPObject(self,host):
         ''' takes a host in the form of a string ip and returns and ftplib
         object '''
-        self.ftpObject = ftplib.FTP(host)
-        if self.configFile.has_key('USERNAME') and\
-                                            self.configFile.has_key('PASSWORD'):
-            username = self.configFile['USERNAME']
-            password = self.configFile['PASSWORD']
+        self.ftpObject = ftplib.FTP(host,timeout=3)
+        if configFile.has_key('USERNAME') and configFile.has_key('PASSWORD'):
+            username = configFile['USERNAME']
+            password = configFile['PASSWORD']
         else:
             username = str(self.ui.usernameTextBox.text())
             password = str(self.ui.passwordTextBox.text())
@@ -349,12 +380,21 @@ class ViewController(QDialog):
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
             start_new_thread(self.pingMachines,())
 
-    def pingMachines(self,timeout=2):
+        if ev.key() == Qt.Key_F6:
+            print 'F6 pressed'
+            self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
+            start_new_thread(self.sort,())
+
+    def sort(self):
+        self.tbl.sortItems(IP,Qt.AscendingOrder)
+
+    def pingMachines(self):
         for ip in self.machinesItems.keys():
             self.pingMachine(ip)
 
     def pingMachine(self,ip,timeout=2):
         _result = ping.do_one(ip,timeout)
+        print _result
         if type(_result) == float:
             isAlive = True
             print 'ip %s alive'%ip

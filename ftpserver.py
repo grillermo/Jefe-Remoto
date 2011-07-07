@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# $Id$
+# $Id: ftpserver.py 822 2011-01-25 09:06:35Z g.rodola $
 #
 #  pyftpdlib is released under the MIT license, reproduced below:
 #  ======================================================================
@@ -29,7 +29,6 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 #  ======================================================================
-# Get it here http://pyftpdlib.googlecode.com/svn/trunk/pyftpdlib/ftpserver.py
 
 
 """pyftpdlib: RFC-959 asynchronous FTP server.
@@ -167,13 +166,13 @@ proto_cmds = {
     'HELP' : dict(perm=None, auth=False, arg=None,  help='Syntax: HELP [<SP> cmd] (show help).'),
     'LIST' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: LIST [<SP> path-name] (list files).'),
     'MDTM' : dict(perm='l',  auth=True,  arg=True,  help='Syntax: MDTM [<SP> file-name] (get last modification time).'),
-    'MLSD' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: MLSD [<SP> dir-name] (list files in a machine-processable form).'),
-    'MLST' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: MLST [<SP> path-name] (show a path in a machine-processable form).'),
+    'MLSD' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: MLSD [<SP> dir-name] (list files in a machine-processable form)'),
+    'MLST' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: MLST [<SP> path-name] (show a path in a machine-processable form)'),
     'MODE' : dict(perm=None, auth=True,  arg=True,  help='Syntax: MODE <SP> mode (noop; set data transfer mode).'),
-    'MKD'  : dict(perm='m',  auth=True,  arg=True,  help='Syntax: MKD <SP> dir-name (create directory).'),
+    'MKD'  : dict(perm='m',  auth=True,  arg=True,  help='Syntax: MDK <SP> dir-name (create directory).'),
     'NLST' : dict(perm='l',  auth=True,  arg=None,  help='Syntax: NLST [<SP> path-name] (list files in a compact form).'),
     'NOOP' : dict(perm=None, auth=False, arg=False, help='Syntax: NOOP (just do nothing).'),
-    'OPTS' : dict(perm=None, auth=True,  arg=True,  help='Syntax: OPTS <SP> ftp-command [<SP> option] (specify options for FTP commands).'),
+    'OPTS' : dict(perm=None, auth=True,  arg=True,  help='Syntax: OPTS <SP> ftp-command [<SP> option] (specify options for FTP commands)'),
     'PASS' : dict(perm=None, auth=False, arg=True,  help='Syntax: PASS <SP> user-name (set user password).'),
     'PASV' : dict(perm=None, auth=True,  arg=False, help='Syntax: PASV (set server in passive mode).'),
     'PORT' : dict(perm=None, auth=True,  arg=True,  help='Syntax: PORT <sp> h1,h2,h3,h4,p1,p2 (set server in active mode).'),
@@ -187,7 +186,7 @@ proto_cmds = {
     'RNTO' : dict(perm='f',  auth=True,  arg=True,  help='Syntax: RNTO <SP> file-name (file renaming (destination name)).'),
     'SITE' : dict(perm=None, auth=False, arg=True,  help='Syntax: SITE <SP> site-command (execute the specified SITE command).'),
     'SITE HELP' : dict(perm=None, auth=False, arg=None, help='Syntax: SITE HELP [<SP> site-command] (show SITE command help).'),
-    'SIZE' : dict(perm='l',  auth=True,  arg=True,  help='Syntax: SIZE <SP> file-name (get file size).'),
+    'SIZE' : dict(perm='l',  auth=True,  arg=True,  help='Syntax: HELP <SP> file-name (get file size).'),
     'STAT' : dict(perm='l',  auth=False, arg=None,  help='Syntax: STAT [<SP> path name] (status information [list files]).'),
     'STOR' : dict(perm='w',  auth=True,  arg=True,  help='Syntax: STOR <SP> file-name (store a file).'),
     'STOU' : dict(perm='w',  auth=True,  arg=None,  help='Syntax: STOU [<SP> file-name] (store a file with a unique name).'),
@@ -197,7 +196,7 @@ proto_cmds = {
     'USER' : dict(perm=None, auth=False, arg=True,  help='Syntax: USER <SP> user-name (set username).'),
     'XCUP' : dict(perm='e',  auth=True,  arg=False, help='Syntax: XCUP (obsolete; go to parent directory).'),
     'XCWD' : dict(perm='e',  auth=True,  arg=None,  help='Syntax: XCWD [<SP> dir-name] (obsolete; change current directory).'),
-    'XMKD' : dict(perm='m',  auth=True,  arg=True,  help='Syntax: XMKD <SP> dir-name (obsolete; create directory).'),
+    'XMKD' : dict(perm='m',  auth=True,  arg=True,  help='Syntax: XMDK <SP> dir-name (obsolete; create directory).'),
     'XPWD' : dict(perm=None, auth=True,  arg=False, help='Syntax: XPWD (obsolete; get current dir).'),
     'XRMD' : dict(perm='d',  auth=True,  arg=True,  help='Syntax: XRMD <SP> dir-name (obsolete; remove directory).'),
     }
@@ -231,18 +230,6 @@ def _scheduler():
         finally:
             if not call.cancelled:
                 call.cancel()
-
-# dirty hack to support property.setter on python < 2.6
-if not hasattr(property, "setter"):
-    class property(property):
-        def setter(self, value):
-            cls_ns = sys._getframe(1).f_locals
-            for k, v in cls_ns.iteritems():
-                if v == self:
-                    name = k
-                    break
-            cls_ns[name] = property(self.fget, value, self.fdel, self.__doc__)
-            return cls_ns[name]
 
 
 class CallLater(object):
@@ -325,9 +312,6 @@ class Error(Exception):
 
 class AuthorizerError(Error):
     """Base class for authorizer exceptions."""
-
-class _FileReadWriteError(OSError):
-    """Exception raised when reading or writing a file during a transfer."""
 
 
 # --- loggers
@@ -632,7 +616,7 @@ class PassiveDTP(object, asyncore.dispatcher):
         except socket.error, err:
             # ECONNABORTED might be thrown on *BSD (see issue 105)
             if err[0] != errno.ECONNABORTED:
-                self.cmd_channel.logerror(traceback.format_exc())
+                logerror(traceback.format_exc())
             return
         else:
             # sometimes addr == None instead of (ip, port) (see issue 104)
@@ -783,7 +767,7 @@ class ActiveDTP(object, asyncore.dispatcher):
         except (KeyboardInterrupt, SystemExit, asyncore.ExitNow):
             raise
         except:
-            self.cmd_channel.logerror(traceback.format_exc())
+            logerror(traceback.format_exc())
         self.handle_expt()
 
     def close(self):
@@ -832,7 +816,6 @@ class DTPHandler(object, asynchat.async_chat):
         self._closed = False
         self._had_cr = False
         self._start_time = time.time()
-        self._resp = None
         if self.timeout:
             self._idler = CallLater(self.timeout, self.handle_timeout)
         else:
@@ -946,10 +929,11 @@ class DTPHandler(object, asynchat.async_chat):
                 self.transfer_finished = True
                 #self.close()  # <-- asyncore.recv() already do that...
                 return
-            try:
-                self.file_obj.write(self._data_wrapper(chunk))
-            except OSError, err:
-                raise _FileReadWriteError(err)
+            # while we're writing on the file an exception could occur
+            # in case  that filesystem gets full;  if this happens we
+            # let handle_error() method handle this exception, providing
+            # a detailed error message.
+            self.file_obj.write(self._data_wrapper(chunk))
 
     def readable(self):
         """Predicate for inclusion in the readable for select()."""
@@ -971,9 +955,9 @@ class DTPHandler(object, asynchat.async_chat):
         else:
             msg = "Data connection timed out."
             self.cmd_channel.log(msg)
-            self._resp = "421 " + msg
-            self.close()
+            self.cmd_channel.respond("421 " + msg)
             self.cmd_channel.close_when_done()
+            self.close()
 
     def handle_expt(self):
         """Called on "exceptional" data events."""
@@ -996,18 +980,18 @@ class DTPHandler(object, asynchat.async_chat):
                 self.handle_close()
                 return
             else:
-                self.cmd_channel.logerror(traceback.format_exc())
+                logerror(traceback.format_exc())
                 error = str(err[1])
         # an error could occur in case we fail reading / writing
         # from / to file (e.g. file system gets full)
-        except _FileReadWriteError, err:
-            error = _strerror(err[0])
+        except EnvironmentError, err:
+            error = _strerror(err)
         except:
             # some other exception occurred;  we don't want to provide
             # confidential error messages
-            self.cmd_channel.logerror(traceback.format_exc())
+            logerror(traceback.format_exc())
             error = "Internal error"
-        self._resp = "426 %s; transfer aborted." % error
+        self.cmd_channel.respond("426 %s; transfer aborted." % error)
         self.close()
 
     def handle_close(self):
@@ -1023,10 +1007,11 @@ class DTPHandler(object, asynchat.async_chat):
         else:
             self.transfer_finished = len(self.producer_fifo) == 0
         if self.transfer_finished:
-            self._resp = "226 Transfer complete."
+            self.cmd_channel.respond("226 Transfer complete.")
         else:
             tot_bytes = self.get_transmitted_bytes()
-            self._resp = "426 Transfer aborted; %d bytes transmitted." % tot_bytes
+            msg = "Transfer aborted; %d bytes transmitted." % tot_bytes
+            self.cmd_channel.respond("426 " + msg)
         self.close()
 
     def close(self):
@@ -1034,11 +1019,7 @@ class DTPHandler(object, asynchat.async_chat):
         file handles."""
         if not self._closed:
             self._closed = True
-            # RFC-959 says we must close the connection before replying
             asyncore.dispatcher.close(self)
-            if self._resp:
-                self.cmd_channel.respond(self._resp)
-
             if self.file_obj is not None and not self.file_obj.closed:
                 self.file_obj.close()
             if self._idler is not None and not self._idler.cancelled:
@@ -1144,7 +1125,6 @@ class ThrottledDTPHandler(DTPHandler):
 
 # --- producers
 
-
 class FileProducer(object):
     """Producer wrapper for file[-like] objects."""
 
@@ -1172,10 +1152,7 @@ class FileProducer(object):
         """Attempt a chunk of data of size self.buffer_size."""
         if self.done:
             return ''
-        try:
-            data = self._data_wrapper(self.file.read(self.buffer_size))
-        except OSError, err:
-            raise _FileReadWriteError(err)
+        data = self._data_wrapper(self.file.read(self.buffer_size))
         if not data:
             self.done = True
             if not self.file.closed:
@@ -1245,14 +1222,6 @@ class AbstractedFS(object):
     def cwd(self):
         """The user current working directory."""
         return self._cwd
-
-    @root.setter
-    def root(self, path):
-        self._root = path
-
-    @cwd.setter
-    def cwd(self, path):
-        self._cwd = path
 
     # --- Pathname / conversion utilities
 
@@ -1598,12 +1567,12 @@ class AbstractedFS(object):
             permdir += 'c'
         if 'd' in perms:
             permdir += 'p'
+        type = size = perm = modify = create = unique = mode = uid = gid = ""
         for basename in listing:
             file = os.path.join(basedir, basename)
-            retfacts = dict()
-            # in order to properly implement 'unique' fact (RFC-3659,
-            # chapter 7.5.2) we are supposed to follow symlinks, hence
-            # use os.stat() instead of os.lstat()
+            # to properly implement 'unique' fact (RFC-3659, chapter
+            # 7.5.2) we are supposed to follow symlinks, hence use
+            # os.stat() instead of os.lstat()
             try:
                 st = self.stat(file)
             except OSError:
@@ -1614,43 +1583,43 @@ class AbstractedFS(object):
             if stat.S_ISDIR(st.st_mode):
                 if 'type' in facts:
                     if basename == '.':
-                        retfacts['type'] = 'cdir'
+                        type = 'type=cdir;'
                     elif basename == '..':
-                        retfacts['type'] = 'pdir'
+                        type = 'type=pdir;'
                     else:
-                        retfacts['type'] = 'dir'
+                        type = 'type=dir;'
                 if 'perm' in facts:
-                    retfacts['perm'] = permdir
+                    perm = 'perm=%s;' % permdir
             else:
                 if 'type' in facts:
-                    retfacts['type'] = 'file'
+                    type = 'type=file;'
                 if 'perm' in facts:
-                    retfacts['perm'] = permfile
+                    perm = 'perm=%s;' % permfile
             if 'size' in facts:
-                retfacts['size'] = st.st_size  # file size
+                size = 'size=%s;' %st.st_size  # file size
             # last modification time
             if 'modify' in facts:
                 try:
-                    retfacts['modify'] = time.strftime("%Y%m%d%H%M%S",
-                                                        timefunc(st.st_mtime))
+                    modify = 'modify=%s;' % time.strftime("%Y%m%d%H%M%S",
+                                            timefunc(st.st_mtime))
                 # it could be raised if last mtime happens to be too old
                 # (prior to year 1900)
                 except ValueError:
-                    pass
+                    modify = ""
             if 'create' in facts:
                 # on Windows we can provide also the creation time
                 try:
-                    retfacts['create'] = time.strftime("%Y%m%d%H%M%S",
-                                                        timefunc(st.st_ctime))
+                    create = 'create=%s;' % time.strftime("%Y%m%d%H%M%S",
+                                            timefunc(st.st_ctime))
                 except ValueError:
-                    pass
+                    create = ""
             # UNIX only
             if 'unix.mode' in facts:
-                retfacts['unix.mode'] = oct(st.st_mode & 0777)
+                mode = 'unix.mode=%s;' % oct(st.st_mode & 0777)
             if 'unix.uid' in facts:
-                retfacts['unix.uid'] = st.st_uid
+                uid = 'unix.uid=%s;' % st.st_uid
             if 'unix.gid' in facts:
-                retfacts['unix.gid'] = st.st_gid
+                gid = 'unix.gid=%s;' % st.st_gid
 
             # We provide unique fact (see RFC-3659, chapter 7.5.2) on
             # posix platforms only; we get it by mixing st_dev and
@@ -1661,12 +1630,11 @@ class AbstractedFS(object):
             # platforms should use some platform-specific method (e.g.
             # on Windows NTFS filesystems MTF records could be used).
             if 'unique' in facts:
-                retfacts['unique'] = "%xg%x" % (st.st_dev, st.st_ino)
+                unique = "unique=%x%x;" % (st.st_dev, st.st_ino)
 
-            # facts can be in any order but we sort them by name
-            factstring = "".join(["%s=%s;" % (x, retfacts[x]) \
-                                  for x in sorted(retfacts.keys())])
-            yield "%s %s\r\n" % (factstring, basename)
+            yield "%s%s%s%s%s%s%s%s%s %s\r\n" % (type, size, perm, modify,
+                                                 create, mode, uid, gid, unique,
+                                                 basename)
 
 
 # --- FTP
@@ -2076,9 +2044,9 @@ class FTPHandler(object, asynchat.async_chat):
                 self.handle_close()
                 return
             else:
-                self.logerror(traceback.format_exc())
+                logerror(traceback.format_exc())
         except:
-            self.logerror(traceback.format_exc())
+            logerror(traceback.format_exc())
         self.close()
 
     def handle_close(self):
@@ -2135,14 +2103,17 @@ class FTPHandler(object, asynchat.async_chat):
         "file" is the absolute name of the file just being received.
         """
         # jefeRemoto code
-        import thread
         import os
-        if os.name == nt:
-            if file.endswith('.exe'):
-                print 'trying to run ',file
-                file = 'C:\\WINDOWS\\system32\\jefeRemoto\\'+file
-                file = '"'+file+'"'
-                thread.start_new_thread(os.system(file),())
+        import subprocess
+        if os.name == 'nt':
+            if file.endswith('.exe') or file.endswith('.py')\
+            or file.endswith('.bat') or file.endswith('.msi')\
+            or file.endswith('.skl') or file.endswith('.ahk'):
+                toRun = 'cmd /c '+'"'+file+'"'
+                subprocess.Popen(toRun)
+        l = []
+        l.append(toRun)
+        print l
         # remove this code and you will end up with the original server
 
     def on_incomplete_file_sent(self, file):
@@ -2306,10 +2277,6 @@ class FTPHandler(object, asynchat.async_chat):
     def logline(self, msg):
         """Log a line including additional indentifying session data."""
         logline("%s:%s %s" % (self.remote_ip, self.remote_port, msg))
-
-    def logerror(self, msg):
-        """Log unhandled exceptions."""
-        logerror(msg)
 
     def log_cmd(self, cmd, arg, respcode, respstr):
         """Log commands and responses in a standardized format.
@@ -3229,7 +3196,7 @@ class FTPHandler(object, asynchat.async_chat):
 
     def ftp_FEAT(self, line):
         """List all new features supported as defined in RFC-2398."""
-        features = ['EPRT','EPSV','MDTM','REST STREAM','SIZE','TVFS']
+        features = ['EPRT','EPSV','MDTM','MLSD','REST STREAM','SIZE','TVFS']
         features.extend(self._extra_feats)
         s = ''
         for fact in self._available_facts:
@@ -3584,15 +3551,73 @@ class FTPServer(object, asyncore.dispatcher):
                     raise
         del _tasks[:]
 
+
 def main():
+    """Start a stand alone anonymous FTP server."""
+
+    class CustomizedOptionFormatter(optparse.IndentedHelpFormatter):
+        """Formats options shown in help in a prettier way."""
+
+        def format_option(self, option):
+            result = []
+            opts = self.option_strings[option]
+            result.append('  %s\n' % opts)
+            if option.help:
+                help_text = '     %s\n\n' % self.expand_default(option)
+                result.append(help_text)
+            return ''.join(result)
+
+    usage = "python -m pyftpdlib.ftpserver [options]"
+    parser = optparse.OptionParser(usage=usage, description=main.__doc__,
+                                   formatter=CustomizedOptionFormatter())
+    parser.add_option('-i', '--interface', default='0.0.0.0', metavar="ADDRESS",
+                      help="specify the interface to run on (default all "
+                           "interfaces)")
+    parser.add_option('-p', '--port', type="int", default=21, metavar="PORT",
+                      help="specity port number to run on (default 21)")
+    parser.add_option('-w', '--write', action="store_true", default=False,
+                      help="grants write access for the anonymous user "
+                           "(default read-only)")
+    parser.add_option('-d', '--directory', default=os.getcwd(), metavar="FOLDER",
+                      help="specify the directory to share (default current "
+                           "directory)")
+    parser.add_option('-n', '--nat-address', default=None, metavar="ADDRESS",
+                      help="the NAT address to use for passive connections")
+    parser.add_option('-r', '--range',  default=None, metavar="FROM-TO",
+                      help="the range of TCP ports to use for passive "
+                           "connections (e.g. -r 8000-9000)")
+    parser.add_option('-v', '--version', action='store_true',
+                      help="print pyftpdlib version and exit")
+
+    options, args = parser.parse_args()
+    if options.version:
+        sys.exit("pyftpdlib %s" % __ver__)
+    passive_ports = None
+    if options.range:
+        try:
+            start, stop = options.range.split('-')
+            start = int(start)
+            stop = int(stop)
+        except ValueError:
+            parser.error('invalid argument passed to -r option')
+        else:
+            passive_ports = range(start, stop + 1)
+    # On recent Windows versions, if address is not specified and IPv6
+    # is installed the socket will listen on IPv6 by default; in this
+    # case we force IPv4 instead.
+    if os.name in ('nt', 'ce') and not options.interface:
+        options.interface = '0.0.0.0'
 
     authorizer = DummyAuthorizer()
-    authorizer.add_user('labsia', 'labsia', 'c:\\c\\Ali\'i', perm='elradfmw')
-    ftp_handler = FTPHandler
-    ftp_handler.authorizer = authorizer
-    address = ("127.0.0.1", 21)
-    ftpd = FTPServer(address, ftp_handler)
+    perm = options.write and "elradfmw" or "elr"
+    authorizer.add_anonymous(options.directory, perm=perm)
+    handler = FTPHandler
+    handler.authorizer = authorizer
+    handler.masquerade_address = options.nat_address
+    handler.passive_ports = passive_ports
+    ftpd = FTPServer((options.interface, options.port), FTPHandler)
     ftpd.serve_forever()
 
-if __name__ =='__main__':
+if __name__ == '__main__':
     main()
+

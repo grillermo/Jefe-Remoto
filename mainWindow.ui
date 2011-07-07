@@ -27,7 +27,7 @@
       <enum>Qt::NoFocus</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="clientTab">
       <attribute name="icon">
@@ -221,70 +221,6 @@ p, li { white-space: pre-wrap; }
        <string>Servidor</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="4" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayoutActionBtns">
-         <item>
-          <widget class="QCommandLinkButton" name="uploadButton">
-           <property name="acceptDrops">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Solo enviar archivo</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resources/plus_64.png</normaloff>:/icons/resources/plus_64.png</iconset>
-           </property>
-           <property name="checkable">
-            <bool>false</bool>
-           </property>
-           <property name="autoRepeat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCommandLinkButton" name="uploadAndExecuteButton">
-           <property name="acceptDrops">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Enviar y ejecutar archivo</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resources/right_64.png</normaloff>:/icons/resources/right_64.png</iconset>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLineEdit" name="fileDropTextLine">
-         <property name="font">
-          <font>
-           <family>Segoe UI</family>
-           <pointsize>11</pointsize>
-           <weight>50</weight>
-           <italic>true</italic>
-           <bold>false</bold>
-           <underline>false</underline>
-           <strikeout>false</strikeout>
-           <stylestrategy>PreferAntialias</stylestrategy>
-           <kerning>true</kerning>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Arrastre o escriba aqui el archivo</string>
-         </property>
-         <property name="dragEnabled">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QTableWidget" name="machinesTable">
          <property name="enabled">
@@ -336,6 +272,24 @@ p, li { white-space: pre-wrap; }
          </column>
         </widget>
        </item>
+       <item row="4" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayoutActionBtns">
+         <item>
+          <widget class="QCommandLinkButton" name="uploadButton">
+           <property name="acceptDrops">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Enviar archivo</string>
+           </property>
+           <property name="icon">
+            <iconset resource="resources.qrc">
+             <normaloff>:/icons/resources/right_64.png</normaloff>:/icons/resources/right_64.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="movie_screen">
          <property name="styleSheet">
@@ -349,6 +303,32 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="margin">
           <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLineEdit" name="fileDropTextLine">
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>11</pointsize>
+           <weight>50</weight>
+           <italic>true</italic>
+           <bold>false</bold>
+           <underline>false</underline>
+           <strikeout>false</strikeout>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <kerning>true</kerning>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Arrastre o escriba aqui el archivo</string>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
