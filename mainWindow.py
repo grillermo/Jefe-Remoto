@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\master\mainWindow.ui'
 #
-# Created: Wed Jul 06 18:01:29 2011
+# Created: Mon Jul 11 18:41:58 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,31 +51,6 @@ class Ui_Dialog(object):
         self.passwordTextBox.setObjectName(_fromUtf8("passwordTextBox"))
         self.horizontalLayout_3.addWidget(self.passwordTextBox)
         self.gridLayout_5.addWidget(self.groupBox, 0, 0, 1, 1)
-        self.groupBox_2 = QtGui.QGroupBox(self.clientTab)
-        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
-        self.gridLayout_3 = QtGui.QGridLayout(self.groupBox_2)
-        self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.ubuntuChoice = QtGui.QRadioButton(self.groupBox_2)
-        self.ubuntuChoice.setEnabled(False)
-        self.ubuntuChoice.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.ubuntuChoice.setObjectName(_fromUtf8("ubuntuChoice"))
-        self.horizontalLayout.addWidget(self.ubuntuChoice)
-        self.osxChoice = QtGui.QRadioButton(self.groupBox_2)
-        self.osxChoice.setEnabled(False)
-        self.osxChoice.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.osxChoice.setObjectName(_fromUtf8("osxChoice"))
-        self.horizontalLayout.addWidget(self.osxChoice)
-        self.windowsChoice = QtGui.QRadioButton(self.groupBox_2)
-        self.windowsChoice.setEnabled(True)
-        self.windowsChoice.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.windowsChoice.setIconSize(QtCore.QSize(16, 16))
-        self.windowsChoice.setChecked(True)
-        self.windowsChoice.setObjectName(_fromUtf8("windowsChoice"))
-        self.horizontalLayout.addWidget(self.windowsChoice)
-        self.gridLayout_3.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.groupBox_3 = QtGui.QGroupBox(self.clientTab)
         self.groupBox_3.setEnabled(True)
         self.groupBox_3.setFlat(False)
@@ -95,7 +70,7 @@ class Ui_Dialog(object):
         self.generateClientButton.setIcon(icon1)
         self.generateClientButton.setObjectName(_fromUtf8("generateClientButton"))
         self.gridLayout_4.addWidget(self.generateClientButton, 1, 0, 1, 1)
-        self.gridLayout_5.addWidget(self.groupBox_3, 2, 0, 1, 2)
+        self.gridLayout_5.addWidget(self.groupBox_3, 1, 0, 1, 2)
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/resources/user_64.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.tabWidget.addTab(self.clientTab, icon2, _fromUtf8(""))
@@ -162,7 +137,7 @@ class Ui_Dialog(object):
         self.gridLayout_2.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.retranslateUi(Dialog)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -170,13 +145,6 @@ class Ui_Dialog(object):
         self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Datos de seguridad", None, QtGui.QApplication.UnicodeUTF8))
         self.userLbl.setText(QtGui.QApplication.translate("Dialog", "Usuario", None, QtGui.QApplication.UnicodeUTF8))
         self.passwordLbl.setText(QtGui.QApplication.translate("Dialog", "Contraseña", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox_2.setTitle(QtGui.QApplication.translate("Dialog", "Generar para:", None, QtGui.QApplication.UnicodeUTF8))
-        self.ubuntuChoice.setToolTip(QtGui.QApplication.translate("Dialog", "Solo disponible al correr esta aplicación Ubuntu", None, QtGui.QApplication.UnicodeUTF8))
-        self.ubuntuChoice.setText(QtGui.QApplication.translate("Dialog", "Ubuntu(deb)", None, QtGui.QApplication.UnicodeUTF8))
-        self.osxChoice.setToolTip(QtGui.QApplication.translate("Dialog", "Solo disponible al correr esta aplicación OsX", None, QtGui.QApplication.UnicodeUTF8))
-        self.osxChoice.setText(QtGui.QApplication.translate("Dialog", "OsX(app bundle)", None, QtGui.QApplication.UnicodeUTF8))
-        self.windowsChoice.setToolTip(QtGui.QApplication.translate("Dialog", "Solo disponible al correr esta aplicación Windows", None, QtGui.QApplication.UnicodeUTF8))
-        self.windowsChoice.setText(QtGui.QApplication.translate("Dialog", "Windows(exe)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("Dialog", "Instrucciones", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -184,7 +152,7 @@ class Ui_Dialog(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">1. Haga click en generar clientes para crear un archivo ejecutable nativo para el sistema operativo en el que se ejecuta esta aplicación.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">2. Ejecute el/los cliente/s en cada máquina que desee controlar.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">3. A continuación expere en la pestaña Servidor a que aparezcan las maquinas.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">3. A continuación espere en la pestaña Servidor a que aparezcan las maquinas.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">4. Arrastre o escriba el nombre de un archivo en el campo correspondiente y haga click en la acción que desea ejecutar.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Nota. Los datos de seguridad se guardarán en los clientes.exe y en el servidor.cfg, permitiendo asi una comunicación exclusiva y segura entre ambos. </span></p>\n"

@@ -24,7 +24,7 @@
 #
 #-------------------------------------------------------------------------------
 import sys
-from os import path, getcwd, system, name
+from os import path, getcwd, system, name, chdir
 from thread import start_new_thread
 import platform
 from socket import gethostbyname, gethostname
@@ -51,10 +51,6 @@ myappid = 'jefeRemoto' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 # #####################################
 
-machinesData = ConfigObj('machines.list') ## here we will save our machines list
-if not path.isfile('machines.list'):
-    machinesData.write()
-
 configFile = ConfigObj('configFile.cfg')
 if not path.isfile('configFile.cfg'):
     configExists = False
@@ -70,6 +66,7 @@ class ViewController(QDialog):
         self.ui=Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.passwordTextBox.setEchoMode(2) # how to do this on Qtdesigner?
+        self.cwd = getcwd()
 
         self.originalFile = 'clienteoriginal.py'
         self.customForClient = 'clientepersonalizado.py'
@@ -86,11 +83,6 @@ class ViewController(QDialog):
         self.movie.setCacheMode(QMovie.CacheAll)
         self.movie.setSpeed(100)
         self.ui.movie_screen.setMovie(self.movie)
-
-
-        if len(machinesData) != 0: # if the user already created clients.exe
-            self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
-        self.tbl.verticalHeader().setVisible(False) # qtDesigner miss this
 
 
         # reimplementing drops
@@ -117,6 +109,7 @@ class ViewController(QDialog):
         start_new_thread(self.startScanner,())
         self.sort()
         self.pingMachines()
+        self.lista = []
 
     def getMachineItem(self,ip):
         return self.machinesItems[ip]
@@ -161,19 +154,27 @@ class ViewController(QDialog):
             self.exeFile = cwd+'/dist/'+customForClient[:-3]+'.app'
             if platform.system() == 'Linux':
                 self.exeFile = cwd+'/dist/'+customForClient[:-3]+'.deb'
-        elif platform.system() == 'Windows':
-            self.ui.osxChoice.setEnabled(False)
-            self.ui.windowsChoice.setEnabled(True)
-            self.ui.ubuntuChoice.setEnabled(False)
-            self.compiler = cwd+'\\PyInstaller\\pyinstaller.py'
-            self.toCompile = cwd+'\\'+customForClient
-            self.exeFile = cwd+'\\dist\\'+customForClient[:-3]+'.exe'
+##        elif platform.system() == 'Windows':
+####            self.ui.osxChoice.setEnabled(False)
+##            self.ui.windowsChoice.setEnabled(True)
+##            self.ui.ubuntuChoice.setEnabled(False)
+##            self.compiler = cwd+'\\PyInstaller\\pyinstaller.py'
+##            self.toCompile = cwd+'\\'+customForClient
+##            self.exeFile = cwd+'\\dist\\'+customForClient[:-3]+'.exe'
 
     def initialLoading(self):
-        for name,ip in machinesData.items():
+        self.machinesData = ConfigObj('machines.list') ## here we will save our machines list
+        if not path.isfile('machines.list'):
+            self.machinesData.write()
+
+        if len(self.machinesData) != 0: # if the user already created clients.exe
+            self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
+        self.tbl.verticalHeader().setVisible(False) # qtDesigner miss this
+
+        for name,ip in self.machinesData.items():
             rowCount = self.tbl.rowCount()
             nameItem = QTableWidgetItem(name)
-            ipItem = QTableWidgetItem(machinesData[name])
+            ipItem = QTableWidgetItem(self.machinesData[name])
             statusItem = QTableWidgetItem('desconocido')
             self.tbl.insertRow(rowCount)
             self.tbl.setItem(rowCount,NAME,nameItem)
@@ -183,18 +184,18 @@ class ViewController(QDialog):
             self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
 
     def addDetectedMachine(self,name,ip):
-        if not machinesData.has_key(name):
-            machinesData[name] = ip
+        if not self.machinesData.has_key(name):
+            self.machinesData[name] = ip
             rowCount = self.tbl.rowCount()
             nameItem = QTableWidgetItem(name)
-            ipItem = QTableWidgetItem(machinesData[name])
+            ipItem = QTableWidgetItem(self.machinesData[name])
             statusItem = QTableWidgetItem('conectada')
             self.tbl.insertRow(rowCount)
             self.tbl.setItem(rowCount,NAME,nameItem)
             self.tbl.setItem(rowCount,IP,ipItem)
             self.tbl.setItem(rowCount,STATUS,statusItem)
 
-            machinesData.write() #and save our detected data to our machines dic
+            self.machinesData.write() #and save our detected data to our machines dic
 
             self.machinesItems[ip] = ipItem #save QTableWidgetItem for later use
 
@@ -209,6 +210,7 @@ class ViewController(QDialog):
             statusItem = QTableWidgetItem('conectada')
         else:
             statusItem = QTableWidgetItem('desconectada')
+            return
         self.tbl.setItem(row,STATUS,statusItem)
 
         if transferStatus:
@@ -223,13 +225,13 @@ class ViewController(QDialog):
         ip = str(self.tbl.item(row,2).text())
         del self.machinesItems[ip]
         self.tbl.removeRow(row)
-        del machinesData[name]
-        machinesData.write()
+        del self.machinesData[name]
+        self.machinesData.write()
 
 
     def runCompilingJob(self):
         self.createClientFile(self.originalFile,self.customForClient)
-##        self.launchCompiler(self.toCompile)
+        self.launchCompiler(self.toCompile)
         self.saveClientFile(self.customForClient)
         self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
 
@@ -254,20 +256,21 @@ class ViewController(QDialog):
         return
         # and now with our script ready we call the compiler
 
-##    def launchCompiler(self,filename,flags=' --onefile'):
-##        ''' Takes a string with the name of our client and calls the compiler
-##        with the flags hard coded here'''
-##        command = '%s "%s" %s'%(self.compiler,filename,flags)
-##        # remember that compiler and toCompile were create by customizeToOS()
-##        print command #debugging
-##        system(command)
-##        # once the file is done we save for future use the data the client used
-##        self.configFile['USERNAME'] = self.username
-##        self.configFile['PASSWORD'] = self.password
-##        self.configFile.write()
-##        return
-##        # the executable is (hopefully)done we can move it where the user wants
-##        print 'debug compilation \n'+str(text)
+    def launchCompiler(self,filename,flags=' --onefile'):
+        ''' Takes a string with the name of our client and calls the compiler
+        with the flags hard coded here'''
+        command = '%s "%s" %s'%(self.compiler,filename,flags)
+        # remember that compiler and toCompile were create by customizeToOS()
+        print command #debugging
+        system(command) # block the script until process finishes, thats what
+                        # we want
+        # once the file is done we save for future use the data the client used
+        self.configFile['USERNAME'] = self.username
+        self.configFile['PASSWORD'] = self.password
+        self.configFile.write()
+        return
+        # the executable is (hopefully)done we can move it where the user wants
+        print 'debug compilation \n'+str(text)
 
     def saveClientFile(self,customForClient):
         options = QFileDialog.ShowDirsOnly
@@ -282,14 +285,16 @@ class ViewController(QDialog):
 
     def prepareShipment(self):
         if self.checkInput():
-            tail, filename = path.split(str(self.ui.fileDropTextLine.text()))
+            filename = str(self.ui.fileDropTextLine.text())
         else:
             return
         start_new_thread(self.upload,(filename,))
 
     def upload(self,filename):
+        name,folder = path.split(filename)
+        os.chdir(folder) # ftplib only works with files in the cwd
         self.emit(SIGNAL('toggleAnimation'))
-        for ip in machinesData.values():
+        for ip in self.machinesData.values():
             print 'uploading to IP ',ip
             item = self.getMachineItem(ip)
             self.tbl.scrollToItem(item,QAbstractItemView.EnsureVisible)
@@ -308,6 +313,7 @@ class ViewController(QDialog):
         if name == 'nt':
             sound = "C:\\c\\jefeRemoto\\master\\audio.wav"
             winsound.PlaySound('%s' % sound, winsound.SND_FILENAME)
+        os.chdir(self.cwd)
 
     def uploadFile(self,filename):
         fileHandler = open(filename,'rb')
@@ -375,6 +381,16 @@ class ViewController(QDialog):
         else:
             event.ignore()
 
+    def getFile(self):
+        for ip in self.machinesData.values():
+            print ip
+            self.initFTPObject(ip)
+            self.downloadFile()
+
+    def downloadFile(self):
+        self.lista.append(self.ftpObject.retrlines('LIST'))
+        return True
+
     def keyPressEvent(self,ev):
         if ev.key() == Qt.Key_F5:
             print 'F5 pressed'
@@ -385,6 +401,12 @@ class ViewController(QDialog):
             print 'F6 pressed'
             self.ui.tabWidget.setCurrentWidget(self.ui.serverTab)
             start_new_thread(self.sort,())
+
+        if ev.key() == Qt.Key_F7:
+            self.getFile()
+
+        if ev.key() == Qt.Key_F8:
+            print self.lista
 
     def sort(self):
         self.tbl.sortItems(IP,Qt.AscendingOrder)
