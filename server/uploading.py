@@ -14,7 +14,7 @@ from thread import start_new_thread
 
 from PyQt4.QtCore import SIGNAL, QObject
 
-class uploader(Object):
+class uploader(QObject):
     def __init__(self,host):
         ''' takes a host in the form of a string ip and returns and ftplib
         object '''
