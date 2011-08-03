@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\c\jefeRemoto\master\mainWindow.ui'
 #
-# Created: Sat Jul 30 14:54:04 2011
+# Created: Mon Aug 01 08:53:03 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -88,7 +88,7 @@ class Ui_Dialog(object):
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.generateClientButton = QtGui.QCommandLinkButton(self.groupBox_3)
-        self.generateClientButton.setEnabled(False)
+        self.generateClientButton.setEnabled(True)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -150,9 +150,9 @@ class Ui_Dialog(object):
         self.fileDropTextLine.setDragEnabled(True)
         self.fileDropTextLine.setObjectName(_fromUtf8("fileDropTextLine"))
         self.horizontalLayout_2.addWidget(self.fileDropTextLine)
-        self.pingMachinesButton = QtGui.QPushButton(self.serverTab)
-        self.pingMachinesButton.setObjectName(_fromUtf8("pingMachinesButton"))
-        self.horizontalLayout_2.addWidget(self.pingMachinesButton)
+        self.multiFunctionsButton = QtGui.QPushButton(self.serverTab)
+        self.multiFunctionsButton.setObjectName(_fromUtf8("multiFunctionsButton"))
+        self.horizontalLayout_2.addWidget(self.multiFunctionsButton)
         self.gridLayout.addLayout(self.horizontalLayout_2, 4, 0, 1, 1)
         self.machinesTable = QtGui.QTableWidget(self.serverTab)
         self.machinesTable.setEnabled(True)
@@ -166,7 +166,9 @@ class Ui_Dialog(object):
         self.machinesTable.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         self.machinesTable.setAcceptDrops(False)
         self.machinesTable.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        self.machinesTable.setAlternatingRowColors(True)
+        self.machinesTable.setAlternatingRowColors(False)
+        self.machinesTable.setGridStyle(QtCore.Qt.DashLine)
+        self.machinesTable.setCornerButtonEnabled(False)
         self.machinesTable.setObjectName(_fromUtf8("machinesTable"))
         self.machinesTable.setColumnCount(5)
         self.machinesTable.setRowCount(0)
@@ -196,26 +198,37 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Jefe Remoto", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Datos de seguridad", None, QtGui.QApplication.UnicodeUTF8))
         self.userLbl.setText(QtGui.QApplication.translate("Dialog", "Usuario", None, QtGui.QApplication.UnicodeUTF8))
+        self.usernameTextBox.setToolTip(QtGui.QApplication.translate("Dialog", "El usuario que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
+        self.usernameTextBox.setStatusTip(QtGui.QApplication.translate("Dialog", "El usuario que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
+        self.usernameTextBox.setWhatsThis(QtGui.QApplication.translate("Dialog", "El usuario que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
         self.passwordLbl.setText(QtGui.QApplication.translate("Dialog", "Contraseña", None, QtGui.QApplication.UnicodeUTF8))
+        self.passwordTextBox.setToolTip(QtGui.QApplication.translate("Dialog", "La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
+        self.passwordTextBox.setStatusTip(QtGui.QApplication.translate("Dialog", "La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
+        self.passwordTextBox.setWhatsThis(QtGui.QApplication.translate("Dialog", "La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_3.setTitle(QtGui.QApplication.translate("Dialog", "Instrucciones", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setHtml(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">Como utilizar este programa</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:600;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Nota previa: la funcionalidad de crear nuevos clientes está deshabilitada por no estar completa. Esta ayuda será útil para la pestaña de servidor.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">* Inicie este programa antes de iniciar todas las maquinas para que estas puedan reportarse exitosamente.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">* Este programa solo funcionará con las máquinas descongeladas.</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">* Si desea enviar archivos para que sean ejecutados estos deben ser .exe .msi .py .ahk .</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">* Cualquier archivo enviado se guardará en las máquinas en la siguiente ruta &quot;c:/windows/system32/jefeRemoto/llegadas&quot;.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Si tiene problemas para detectar las máquinas asegurese de la conectividad física y reinicielas.</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Si tienes alguna duda escribeme a @grillermo (mi cuenta de twitter) o a mi correo electrónico guillermo.siliceo@gmail.com</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Como utilizar este programa</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Crear clientes </span><span style=\" font-size:12pt;\">(solo Windows)</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Para crear un ejecutable escriba un nombre de usuario y una contraseña.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Haga click en crear cliente.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Una vez tenga el archivo ejecutable corralo en las maquinas que desea controlar.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Uso de servidor</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Introducir el nombre de usuario y la contraseña, por defecto se utilizarán los datos utilizados en la creación del último cliente.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\"> Inicie este programa antes de iniciar todas las maquinas para que estas puedan reportarse exitosamente.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\"> Este programa solo funcionará con las máquinas descongeladas.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\"> Si desea enviar archivos para que sean ejecutados estos deben ser .exe .msi .py .ahk .</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Problemas</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Si tiene problemas para detectar las máquinas asegurese de la conectividad física y reinicielas.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Si tienes alguna duda mandame un twitt a @grillermo o escribeme correo electrónico guillermo.siliceo@gmail.com</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"></p>\n"
+"<p align=\"right\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">Copyright 2011 Guillermo Siliceo Trueba</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.deleteMachinesButton.setToolTip(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -231,29 +244,36 @@ class Ui_Dialog(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Esto borrará la lista de clientes detectados. Si desea una nueva lista haga click aquí.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.deleteMachinesButton.setText(QtGui.QApplication.translate("Dialog", "Limpiar lista de clientes", None, QtGui.QApplication.UnicodeUTF8))
+        self.generateClientButton.setToolTip(QtGui.QApplication.translate("Dialog", "Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.", None, QtGui.QApplication.UnicodeUTF8))
+        self.generateClientButton.setStatusTip(QtGui.QApplication.translate("Dialog", "Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.", None, QtGui.QApplication.UnicodeUTF8))
+        self.generateClientButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.", None, QtGui.QApplication.UnicodeUTF8))
         self.generateClientButton.setText(QtGui.QApplication.translate("Dialog", "Crear Cliente", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.clientTab), QtGui.QApplication.translate("Dialog", "Clientes", None, QtGui.QApplication.UnicodeUTF8))
         self.uploadButton.setToolTip(QtGui.QApplication.translate("Dialog", "Se enviará el archivo a las maquinas palomeadas. Puede seleccionarlas o deseleccionarlas haciendo click en la cabezera de su columna.", None, QtGui.QApplication.UnicodeUTF8))
         self.uploadButton.setStatusTip(QtGui.QApplication.translate("Dialog", "Se enviará el archivo a las maquinas palomeadas. Puede seleccionarlas o deseleccionarlas haciendo click en la cabezera de su columna.", None, QtGui.QApplication.UnicodeUTF8))
         self.uploadButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "Se enviará el archivo a las maquinas palomeadas. Puede seleccionarlas o deseleccionarlas haciendo click en la cabezera de su columna.", None, QtGui.QApplication.UnicodeUTF8))
         self.uploadButton.setText(QtGui.QApplication.translate("Dialog", "Enviar archivo", None, QtGui.QApplication.UnicodeUTF8))
+        self.chooseFileButton.setToolTip(QtGui.QApplication.translate("Dialog", "Elija un archivo, o arrastrelo en la barra de texto", None, QtGui.QApplication.UnicodeUTF8))
+        self.chooseFileButton.setStatusTip(QtGui.QApplication.translate("Dialog", "Elija un archivo, o arrastrelo en la barra de texto", None, QtGui.QApplication.UnicodeUTF8))
+        self.chooseFileButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "Elija un archivo, o arrastrelo en la barra de texto", None, QtGui.QApplication.UnicodeUTF8))
         self.chooseFileButton.setText(QtGui.QApplication.translate("Dialog", "Elegir archivo", None, QtGui.QApplication.UnicodeUTF8))
-        self.pingMachinesButton.setToolTip(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.multiFunctionsButton.setToolTip(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">F5</span><span style=\" font-size:8pt;\"> - hace un ping a todas las maquinas en la lista y reporta su estado.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.pingMachinesButton.setStatusTip(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">F5</span><span style=\" font-size:8pt;\"> - hace un ping a todas las maquinas en la lista y reporta su estado.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.pingMachinesButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.multiFunctionsButton.setStatusTip(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">F5</span><span style=\" font-size:8pt;\"> - hace un ping a todas las maquinas en la lista y reporta su estado.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.multiFunctionsButton.setWhatsThis(QtGui.QApplication.translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-weight:600;\">F5</span><span style=\" font-size:8pt;\"> - hace un ping a todas las maquinas en la lista y reporta su estado.</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.pingMachinesButton.setText(QtGui.QApplication.translate("Dialog", "Checar conectividad", None, QtGui.QApplication.UnicodeUTF8))
+        self.multiFunctionsButton.setText(QtGui.QApplication.translate("Dialog", "Checar conectividad", None, QtGui.QApplication.UnicodeUTF8))
+        self.machinesTable.horizontalHeaderItem(0).setText(QtGui.QApplication.translate("Dialog", "͏", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(1).setText(QtGui.QApplication.translate("Dialog", "Nombre", None, QtGui.QApplication.UnicodeUTF8))
-        self.machinesTable.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("Dialog", "Estado", None, QtGui.QApplication.UnicodeUTF8))
+        self.machinesTable.horizontalHeaderItem(2).setText(QtGui.QApplication.translate("Dialog", "Conexión", None, QtGui.QApplication.UnicodeUTF8))
         self.machinesTable.horizontalHeaderItem(3).setText(QtGui.QApplication.translate("Dialog", "IP", None, QtGui.QApplication.UnicodeUTF8))
-        self.machinesTable.horizontalHeaderItem(4).setText(QtGui.QApplication.translate("Dialog", "Transferencia", None, QtGui.QApplication.UnicodeUTF8))
+        self.machinesTable.horizontalHeaderItem(4).setText(QtGui.QApplication.translate("Dialog", "Estado", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.serverTab), QtGui.QApplication.translate("Dialog", "Servidor", None, QtGui.QApplication.UnicodeUTF8))
 
 import resources_rc

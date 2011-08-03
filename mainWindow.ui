@@ -71,6 +71,15 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="toolTip">
+             <string>El usuario que se usará para configurar los clientes y conectarse a ellos.</string>
+            </property>
+            <property name="statusTip">
+             <string>El usuario que se usará para configurar los clientes y conectarse a ellos.</string>
+            </property>
+            <property name="whatsThis">
+             <string>El usuario que se usará para configurar los clientes y conectarse a ellos.</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -100,6 +109,15 @@
            <widget class="QLineEdit" name="passwordTextBox">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.</string>
+            </property>
+            <property name="statusTip">
+             <string>La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.</string>
+            </property>
+            <property name="whatsThis">
+             <string>La contraseña de seguridad que se usará para configurar los clientes y conectarse a ellos.</string>
             </property>
            </widget>
           </item>
@@ -137,20 +155,25 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Como utilizar este programa&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-weight:600;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Nota previa: la funcionalidad de crear nuevos clientes está deshabilitada por no estar completa. Esta ayuda será útil para la pestaña de servidor.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;* Inicie este programa antes de iniciar todas las maquinas para que estas puedan reportarse exitosamente.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;* Este programa solo funcionará con las máquinas descongeladas.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;* Si desea enviar archivos para que sean ejecutados estos deben ser .exe .msi .py .ahk .&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;* Cualquier archivo enviado se guardará en las máquinas en la siguiente ruta &amp;quot;c:/windows/system32/jefeRemoto/llegadas&amp;quot;.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Si tiene problemas para detectar las máquinas asegurese de la conectividad física y reinicielas.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Si tienes alguna duda escribeme a @grillermo (mi cuenta de twitter) o a mi correo electrónico guillermo.siliceo@gmail.com&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Como utilizar este programa&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Crear clientes &lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;(solo Windows)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Para crear un ejecutable escriba un nombre de usuario y una contraseña.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Haga click en crear cliente.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Una vez tenga el archivo ejecutable corralo en las maquinas que desea controlar.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Uso de servidor&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Introducir el nombre de usuario y la contraseña, por defecto se utilizarán los datos utilizados en la creación del último cliente.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; Inicie este programa antes de iniciar todas las maquinas para que estas puedan reportarse exitosamente.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; Este programa solo funcionará con las máquinas descongeladas.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; Si desea enviar archivos para que sean ejecutados estos deben ser .exe .msi .py .ahk .&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Problemas&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Si tiene problemas para detectar las máquinas asegurese de la conectividad física y reinicielas.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Si tienes alguna duda mandame un twitt a @grillermo o escribeme correo electrónico guillermo.siliceo@gmail.com&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Copyright 2011 Guillermo Siliceo Trueba&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -214,7 +237,7 @@ p, li { white-space: pre-wrap; }
             <item>
              <widget class="QCommandLinkButton" name="generateClientButton">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -231,6 +254,15 @@ p, li { white-space: pre-wrap; }
                 <underline>false</underline>
                 <stylestrategy>PreferDefault</stylestrategy>
                </font>
+              </property>
+              <property name="toolTip">
+               <string>Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.</string>
+              </property>
+              <property name="statusTip">
+               <string>Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.</string>
+              </property>
+              <property name="whatsThis">
+               <string>Crear un archivo ejecutable para comunicar este programa con las máquinas clientes.</string>
               </property>
               <property name="layoutDirection">
                <enum>Qt::RightToLeft</enum>
@@ -306,6 +338,15 @@ p, li { white-space: pre-wrap; }
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QPushButton" name="chooseFileButton">
+           <property name="toolTip">
+            <string>Elija un archivo, o arrastrelo en la barra de texto</string>
+           </property>
+           <property name="statusTip">
+            <string>Elija un archivo, o arrastrelo en la barra de texto</string>
+           </property>
+           <property name="whatsThis">
+            <string>Elija un archivo, o arrastrelo en la barra de texto</string>
+           </property>
            <property name="text">
             <string>Elegir archivo</string>
            </property>
@@ -335,7 +376,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pingMachinesButton">
+          <widget class="QPushButton" name="multiFunctionsButton">
            <property name="toolTip">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -387,7 +428,13 @@ p, li { white-space: pre-wrap; }
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="alternatingRowColors">
-          <bool>true</bool>
+          <bool>false</bool>
+         </property>
+         <property name="gridStyle">
+          <enum>Qt::DashLine</enum>
+         </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
          </property>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
@@ -397,27 +444,57 @@ p, li { white-space: pre-wrap; }
          </attribute>
          <column>
           <property name="text">
-           <string/>
+           <string>͏</string>
+          </property>
+          <property name="toolTip">
+           <string>Seleccionar / Deseleccionar las máquinas para enviarles o no archivos.</string>
+          </property>
+          <property name="whatsThis">
+           <string>Seleccionar / Deseleccionar las máquinas para enviarles o no archivos.</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Nombre</string>
           </property>
+          <property name="toolTip">
+           <string>Orden alfabético por nombre.</string>
+          </property>
+          <property name="whatsThis">
+           <string>Orden alfabético por nombre.</string>
+          </property>
          </column>
          <column>
           <property name="text">
-           <string>Estado</string>
+           <string>Conexión</string>
+          </property>
+          <property name="toolTip">
+           <string>Muestra si jefeRemoto logró la conexión con los clientes.</string>
+          </property>
+          <property name="whatsThis">
+           <string>Muestra si jefeRemoto logró la conexión con los clientes.</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>IP</string>
           </property>
+          <property name="toolTip">
+           <string>La IP de la máquina.</string>
+          </property>
+          <property name="whatsThis">
+           <string>La IP de la máquina.</string>
+          </property>
          </column>
          <column>
           <property name="text">
-           <string>Transferencia</string>
+           <string>Estado</string>
+          </property>
+          <property name="toolTip">
+           <string>Información variada sobre las tareas.</string>
+          </property>
+          <property name="whatsThis">
+           <string>Información variada sobre las tareas.</string>
           </property>
          </column>
         </widget>

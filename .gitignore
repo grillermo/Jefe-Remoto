@@ -1,3 +1,4 @@
+*.zip
 *.log
 *.pyc
 *.png
@@ -7,3 +8,9 @@
 *.cfg
 *.spec
 *.list
+/pyinstaller
+*.exe
+*.manifest
+*.crt
+*.bat
+*.msi

