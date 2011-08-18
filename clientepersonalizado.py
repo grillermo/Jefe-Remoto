@@ -35,7 +35,7 @@ import socket as sk
 from ftpserver import *
 from configobj import ConfigObj
 
-USER, PASSWORD, SERVERIP = "01010010011010", "001001000111", "148.214.82.56"
+USER, PASSWORD, SERVERIP ="01010010011010","001001000111","148.214.82.56"
 MAINFOLDER = 'c:\\WINDOWS\\system32\\jefeRemoto'
 ARRIVALFOLDERNAME = 'Llegadas'
 ARRIVALFOLDER = path.join(MAINFOLDER,ARRIVALFOLDERNAME)
@@ -46,6 +46,7 @@ chdir(MAINFOLDER)
 
 config = ConfigObj('conf.cfg')
 if not path.isfile('conf.cfg'):
+    exe = argv[0]
     try:
         LOCALIP = ([ip for ip in sk.gethostbyname_ex(sk.gethostname())[2] if not ip.startswith("127.")][0])
         MACHINENAME = sk.gethostname()
@@ -62,6 +63,7 @@ else:
     LOCALIP = config['LOCALIP']
     MACHINENAME = config['MACHINENAME']
     ARRIVALFOLDER = config['ARRIVALFOLDER']
+
 
 class clientServices():
     def __init__(self):
@@ -95,6 +97,12 @@ class clientServices():
                 print 'waiting for the STOP message\n'
             except sk.timeout:
                 print 'scanner timeout\n'
+                scannerSock.shutdown(sk.SHUT_RDWR)
+                scannerSock.close()
+                self.reportIn()
+            except sk.error:
+                print 'remote server offline or blocking the request'
+                sleep(TIMEOUT)
                 scannerSock.shutdown(sk.SHUT_RDWR)
                 scannerSock.close()
                 self.reportIn()

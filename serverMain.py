@@ -160,37 +160,44 @@ class ViewController(QDialog):
         if not path.isfile('machines.list'):
             self.machinesData.write()
         for name,ip in self.machinesData.items():
-            self.addMachine(name,ip,status='Conectada')
+            self.addMachine(name,ip,status='Desconocido')
         self.allItemsChecked = True
 
 
-    def addMachine(self,name,ip,status='Desconocido'):
+    def addMachine(self,name,ip,status=''):
         self.machinesData[name] = ip
-        rowNumber = self.tbl.rowCount()
-        nameItem = QTableWidgetItem(name)
-        IPItem = QTableWidgetItem(self.machinesData[name])
-        statusItem = QTableWidgetItem(status)
-        checkboxItem = QTableWidgetItem()
-        checkboxItem.setFlags(Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
-        checkboxItem.setCheckState(Qt.Checked)
-        transferItem = QTableWidgetItem('')
-        self.allItemsChecked = True
-        self.tbl.insertRow(rowNumber)
-        self.tbl.setItem(rowNumber,NAME,nameItem)
-        self.tbl.setItem(rowNumber,IP,IPItem)
-        self.tbl.setItem(rowNumber,STATUS,statusItem)
-        self.tbl.setItem(rowNumber,CHECKED,checkboxItem)
-        self.tbl.setItem(rowNumber,TRANSFER,transferItem)
-        self.tableData[rowNumber] = {'checkboxItem':checkboxItem,
-                            'nameItem':nameItem,
-                            'IPItem':IPItem,
-                            'statusItem':statusItem,
-                            'transferItem':transferItem}
-        row = self.tableData[rowNumber]
-        isAlive = None
-        if status == 'conectada':
-            isALive = True
-        self.updateRow(row,isAlive,transferStatus=status)
+        if status == 'Conectada':
+            rowNumber = self.tbl.rowCount()
+            nameItem = QTableWidgetItem(name)
+            IPItem = QTableWidgetItem(self.machinesData[name])
+            statusItem = QTableWidgetItem(status)
+            checkboxItem = QTableWidgetItem()
+            checkboxItem.setFlags(Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
+            checkboxItem.setCheckState(Qt.Checked)
+            transferItem = QTableWidgetItem('')
+            self.allItemsChecked = True
+            self.tbl.insertRow(rowNumber)
+            self.tbl.setItem(rowNumber,NAME,nameItem)
+            self.tbl.setItem(rowNumber,IP,IPItem)
+            self.tbl.setItem(rowNumber,STATUS,statusItem)
+            self.tbl.setItem(rowNumber,CHECKED,checkboxItem)
+            self.tbl.setItem(rowNumber,TRANSFER,transferItem)
+            self.tableData[rowNumber] = {'checkboxItem':checkboxItem,
+                                'nameItem':nameItem,
+                                'IPItem':IPItem,
+                                'statusItem':statusItem,
+                                'transferItem':transferItem}
+            row = self.tableData[rowNumber] # row is dict, rownumber an int
+            isAlive = None
+            if status == 'conectada':
+                isALive = True
+            self.updateRow(row,isAlive,transferStatus=status)
+        else:
+            for row in self.tableData.values():
+                if row['nameItem'] == name:
+                    return
+                else:
+                    self.addMachine(name,ip,status='Detectada')
         return
 
     def updateRow(self,row,isAlive=None,transferStatus=''):
