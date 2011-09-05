@@ -49,7 +49,9 @@ class Scanner(QObject):
 ##                print 'sending STOP signal back to', address[0]
                 resser.sendto('STOP', address)
                 status = 'Conectada'
-                self.emit(SIGNAL('addMachines'),msg[5:],address[0])
+                machineName = msg[5:]
+                machineIP = address[0]
+                self.emit(SIGNAL('addMachines'),machineName,machineIP,status)
             else:
                 pass
 ##                print 'unidentified signal (server-side):', msg, 'from', address, '-> IGNORED'

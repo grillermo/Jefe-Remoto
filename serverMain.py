@@ -33,8 +33,6 @@ from shutil import move, copy
 import ftplib
 import time
 
-
-
 from PyQt4.QtCore import SIGNAL, QProcess, Qt, QThread, QByteArray, QObject, \
                         QTextCodec, QPoint
 from PyQt4.QtGui import QDialog, QApplication, QTableWidgetItem, QFileDialog, \
@@ -71,7 +69,7 @@ class ViewController(QDialog):
         QDialog.__init__(self)
         self.ui=Ui_Dialog()
         self.ui.setupUi(self)
-        self.tableData = {}
+        self.machinesData = {}
 
         self.tbl = self.ui.machinesTable # i think this adds to the readability
 
@@ -165,39 +163,34 @@ class ViewController(QDialog):
 
 
     def addMachine(self,name,ip,status=''):
-        self.machinesData[name] = ip
-        if status == 'Conectada':
-            rowNumber = self.tbl.rowCount()
-            nameItem = QTableWidgetItem(name)
-            IPItem = QTableWidgetItem(self.machinesData[name])
-            statusItem = QTableWidgetItem(status)
-            checkboxItem = QTableWidgetItem()
-            checkboxItem.setFlags(Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
-            checkboxItem.setCheckState(Qt.Checked)
-            transferItem = QTableWidgetItem('')
-            self.allItemsChecked = True
-            self.tbl.insertRow(rowNumber)
-            self.tbl.setItem(rowNumber,NAME,nameItem)
-            self.tbl.setItem(rowNumber,IP,IPItem)
-            self.tbl.setItem(rowNumber,STATUS,statusItem)
-            self.tbl.setItem(rowNumber,CHECKED,checkboxItem)
-            self.tbl.setItem(rowNumber,TRANSFER,transferItem)
-            self.tableData[rowNumber] = {'checkboxItem':checkboxItem,
-                                'nameItem':nameItem,
-                                'IPItem':IPItem,
-                                'statusItem':statusItem,
-                                'transferItem':transferItem}
-            row = self.tableData[rowNumber] # row is dict, rownumber an int
-            isAlive = None
-            if status == 'conectada':
-                isALive = True
-            self.updateRow(row,isAlive,transferStatus=status)
-        else:
-            for row in self.tableData.values():
+        for row in self.machinesData.values:
+            if row.has_key('nameItem'):
                 if row['nameItem'] == name:
-                    return
-                else:
-                    self.addMachine(name,ip,status='Detectada')
+                    isAlive = True
+            else:
+                rowNumber = self.tbl.rowCount()
+                nameItem = QTableWidgetItem(name)
+                IPItem = QTableWidgetItem(self.machinesData[name])
+                statusItem = QTableWidgetItem(status)
+                checkboxItem = QTableWidgetItem()
+                checkboxItem.setFlags(Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
+                checkboxItem.setCheckState(Qt.Checked)
+                transferItem = QTableWidgetItem('')
+                self.allItemsChecked = True
+                self.tbl.insertRow(rowNumber)
+                self.tbl.setItem(rowNumber,NAME,nameItem)
+                self.tbl.setItem(rowNumber,IP,IPItem)
+                self.tbl.setItem(rowNumber,STATUS,statusItem)
+                self.tbl.setItem(rowNumber,CHECKED,checkboxItem)
+                self.tbl.setItem(rowNumber,TRANSFER,transferItem)
+                self.machinesData[rowNumber] = {'checkboxItem':checkboxItem,
+                                                'nameItem':nameItem,
+                                                'IPItem':IPItem,
+                                                'statusItem':statusItem,
+                                                'transferItem':transferItem}
+                row = self.machinesData[rowNumber]
+                isAlive = None
+            self.emit(SIGNAL('updateStatus'),row,isAlive)
         return
 
     def updateRow(self,row,isAlive=None,transferStatus=''):
@@ -243,7 +236,7 @@ poblará automaticaménte conforme se inicien maquinas con el cliente instalado'
         if QMessageBox.question(self, 'Advertencia', mensaje,
                                 QMessageBox.Yes | QMessageBox.No,QMessageBox.No
                                 ) == QMessageBox.Yes:
-            for rowNumber,row in self.tableData.items():
+            for rowNumber,row in self.machinesData.items():
                 self.deleteMachine(rowNumber,row)
         else:
             return
@@ -251,11 +244,8 @@ poblará automaticaménte conforme se inicien maquinas con el cliente instalado'
         return
 
     def deleteMachine(self, rowNumber,row):
-        name = str(row['nameItem'].text())
-        ip = str(row['ipItem'].text())
-        del self.tableData[row]
+        del self.machinesData[row]
         self.tbl.removeRow(rowNumber)
-        del self.machinesData[name]
         self.machinesData.write()
         return
 
@@ -343,7 +333,7 @@ el archivo de nuevo e intente guardarlo en otro directorio')
         folder,filename = path.split(filename)
         chdir(folder) # ftplib only works with files in the cwd
         failFlag = False
-        for row in self.tableData.values():
+        for row in self.machinesData.values():
 ##            print 'uploading to IP ',ip
             item = row['IPItem']
             self.tbl.scrollToItem(item,QAbstractItemView.EnsureVisible)
@@ -363,7 +353,7 @@ el archivo de nuevo e intente guardarlo en otro directorio')
                     self.updateRow(row,False,status)
 
         if failFlag: # nice ui touch, select the bad ones to let the user retry
-            for row in self.tableData.values():
+            for row in self.machinesData.values():
                 if str(row['transferItem'].text()) == 'Transferencia fallida':
                     row['checkboxItem'].setCheckState(Qt.Checked)
                 else:
@@ -488,16 +478,16 @@ enviar?', CWD)
         and unchecks them if most are checked'''
         checkeds = 0
         uncheckeds = 0
-        for row in self.tableData.values():
+        for row in self.machinesData.values():
             if row['checkboxItem'].checkState() == Qt.Unchecked:
                 checkeds += 1
             if row['checkboxItem'].checkState() == Qt.Checked:
                 uncheckeds += 1
         if checkeds <= uncheckeds:
-            for row in self.tableData.values():
+            for row in self.machinesData.values():
                 row['checkboxItem'].setCheckState(Qt.Unchecked)
         else:
-            for row in self.tableData.values():
+            for row in self.machinesData.values():
                 row['checkboxItem'].setCheckState(Qt.Checked)
 
 
@@ -517,7 +507,7 @@ enviar?', CWD)
 
 
     def pingMachines(self):
-        for row in self.tableData.values():
+        for row in self.machinesData.values():
             IPItem = row['IPItem']
             ip = str(IPItem.text())
             if row['checkboxItem'].checkState() == Qt.Checked:
